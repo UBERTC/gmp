@@ -1,3 +1,26 @@
+2015-05-17  Torbjörn Granlund  <torbjorng@google.com>
+
+	* mpn/arm/v6/sqr_basecase.asm: Rewrite for speed.
+
+2015-05-16  Torbjörn Granlund  <torbjorng@google.com>
+
+	* mpn/arm/v6/addmul_2.asm: Rewrite for speed and size.
+
+2015-05-15  Torbjörn Granlund  <torbjorng@google.com>
+
+	* mpn/arm/v7a/cora7/gmp-mparam.h: New file.
+	* mpn/arm/v7a/cora8/gmp-mparam.h: New file.
+	* configure.ac (arm): Point to new directories.
+
+2015-05-15 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* mpn/generic/invertappr.c: Reduce memory usage.
+	* gmp-impl.h (mpn_invertappr_itch): Update accordingly.
+	* tune/tuneup.c (tune_invertappr, tune_invert): Update min_size.
+
+	* mpn/generic/mu_div_qr.c: Pass scratch memory to mpn_invertappr.
+	* mpn/generic/mu_divappr_q.c: Likewise.
+
 2015-05-12  Felix Janda  <felix.janda@posteo.de>
 
 	* mpn/powerpc32/elf.m4 (LEA): Adopt to new ABI.
