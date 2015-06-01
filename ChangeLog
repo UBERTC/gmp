@@ -1,3 +1,43 @@
+2015-05-30 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* mpf/cmp_ui.c: Use macros, remove branches, correct nails.
+	* mpf/cmp_si.c: Likewise.
+	* mpf/int_p.c: Use a simpler loop to ignore zero limbs.
+
+	* mpf/sqrt_ui.c: Special case for sqrt(1).
+	* tests/mpf/t-sqrt_ui.c: Test special cases.
+
+	* gmp-h.in: Declare (and inline) mpn_zero_p.
+	* gmp-impl.h: Remove mpn_zero_p.
+	* mpn/generic/zero_p: New file to include the function in the library.
+	* configure.ac (gmp_mpn_functions): Add it.
+	* doc/gmp.texi: Document it.
+	
+2015-05-28  Niels Möller  <nisse@lysator.liu.se>
+
+	* doc/gmp.texi (Low-level Functions): Document mpn_divexact_1 and
+	mpn_cnd_swap (the latter was forgotten for the 2015-02-08 change).
+
+2015-05-28  Linus Nordberg  <linus@nordberg.se>
+
+	* configure.ac: Remove double quotes in help strings, make some
+	clarifications.
+
+2015-05-24 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* mpq/div.c: Reduce memory use.
+	* tests/mpq/reuse.c: Test also mpq_FUNCTION (x,x,x).
+	* mpz/swap.c: Use _SWAP macros.
+
+2015-05-18  Torbjörn Granlund  <torbjorng@google.com>
+
+	* configure.ac (arm): Let compiler decide about arm vs thumb encoding.
+
+2015-05-18 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* gmp-h.in (mpn_neg): Niels' code using mpn_neg.
+	* gmp-h.in (mpn_com): Unconditionally declare prototype.
+
 2015-05-17  Torbjörn Granlund  <torbjorng@google.com>
 
 	* mpn/arm/v6/sqr_basecase.asm: Rewrite for speed.

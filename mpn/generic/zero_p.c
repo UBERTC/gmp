@@ -1,7 +1,6 @@
-/* mpf_integer_p -- test whether an mpf is an integer */
+/* mpn_zero_p (x,xsize) -- Return 1 if X is zero, 0 if it is non-zero.
 
-/*
-Copyright 2001, 2002, 2014-2015 Free Software Foundation, Inc.
+Copyright 2015 Free Software Foundation, Inc.
 
 This file is part of the GNU MP Library.
 
@@ -29,28 +28,7 @@ You should have received copies of the GNU General Public License and the
 GNU Lesser General Public License along with the GNU MP Library.  If not,
 see https://www.gnu.org/licenses/.  */
 
+#define __GMP_FORCE_mpn_zero_p 1
+
 #include "gmp.h"
 #include "gmp-impl.h"
-
-
-int
-mpf_integer_p (mpf_srcptr f) __GMP_NOTHROW
-{
-  mp_srcptr fp;
-  mp_exp_t exp;
-  mp_size_t size;
-
-  size = SIZ (f);
-  exp = EXP (f);
-  if (exp <= 0)
-    return (size == 0);  /* zero is an integer,
-			    others have only fraction limbs */
-  size = ABS (size);
-
-  /* Ignore zeroes at the low end of F.  */
-  for (fp = PTR (f); *fp == 0; ++fp)
-    --size;
-
-  /* no fraction limbs */
-  return size <= exp;
-}

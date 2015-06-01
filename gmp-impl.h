@@ -3,7 +3,7 @@
    THE CONTENTS OF THIS FILE ARE FOR INTERNAL USE AND ARE ALMOST CERTAIN TO
    BE SUBJECT TO INCOMPATIBLE CHANGES IN FUTURE GNU MP RELEASES.
 
-Copyright 1991, 1993-1997, 1999-2014 Free Software Foundation, Inc.
+Copyright 1991, 1993-1997, 1999-2015 Free Software Foundation, Inc.
 
 This file is part of the GNU MP Library.
 
@@ -4294,8 +4294,8 @@ __GMP_DECLSPEC extern mp_size_t __gmp_default_fp_limb_precision;
    down.  */
 #define DIGITS_IN_BASE_PER_LIMB(res, nlimbs, b)				\
   do {									\
-    mp_limb_t _ph, _pl;							\
-    umul_ppmm (_ph, _pl,						\
+    mp_limb_t _ph, _dummy;						\
+    umul_ppmm (_ph, _dummy,						\
 	       mp_bases[b].logb2, GMP_NUMB_BITS * (mp_limb_t) (nlimbs));\
     res = _ph;								\
   } while (0)
@@ -4655,17 +4655,6 @@ mpn_sub_nc (mp_ptr rp, mp_srcptr up, mp_srcptr vp, mp_size_t n, mp_limb_t ci)
   return co;
 }
 #endif
-
-static inline int
-mpn_zero_p (mp_srcptr ap, mp_size_t n)
-{
-  while (--n >= 0)
-    {
-      if (ap[n] != 0)
-	return 0;
-    }
-  return 1;
-}
 
 #if TUNE_PROGRAM_BUILD
 /* Some extras wanted when recompiling some .c files for use by the tune
