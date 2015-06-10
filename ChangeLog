@@ -1,3 +1,13 @@
+2015-06-08  Torbjörn Granlund  <torbjorng@google.com>
+
+	* mpn/x86/p6/gcd_1.asm: Align stack for calls.
+
+2015-06-06  Torbjörn Granlund  <torbjorng@google.com>
+
+	* config.sub: Recognise any arm*neon CPU.
+	* configure.ac (powerpc): Add p8 directory for power8 and later.
+	* mpn/powerpc64/mode64/p8/invert_limb.asm: New file.
+
 2015-06-01  Torbjörn Granlund  <torbjorng@google.com>
 
 	* tune/speed.c (routine): Measure "mpn_sqrt" and "mpn_root", which are
