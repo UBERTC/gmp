@@ -171,45 +171,33 @@ mpn_sqrtrem1 (mp_ptr rp, mp_limb_t a0)
 static mp_limb_t
 mpn_sqrtrem2 (mp_ptr sp, mp_ptr rp, mp_srcptr np)
 {
-  mp_limb_t qhl, q, u, np0, sp0, rp0, q2;
+  mp_limb_t q, u, np0, sp0, rp0, q2;
   int cc;
 
   ASSERT (np[1] >= GMP_NUMB_HIGHBIT / 2);
 
   np0 = np[0];
   sp0 = mpn_sqrtrem1 (rp, np[1]);
-  qhl = 0;
   rp0 = rp[0];
-  while (rp0 >= sp0)
-    {
-      qhl++;
-      rp0 -= sp0;
-    }
-  /* now rp0 < sp0 < 2^Prec */
-  rp0 = (rp0 << Prec) + (np0 >> Prec);
-  u = 2 * sp0;
-  q = rp0 / u;
-  u = rp0 - q * u;
-  q += (qhl & 1) << (Prec - 1);
-  qhl >>= 1; /* if qhl=1, necessary q=0 as qhl*2^Prec + q <= 2^Prec */
-  /* now we have (initial rp0)<<Prec + np0>>Prec = (qhl<<Prec + q) * (2sp0) + u */
-  sp0 = ((sp0 + qhl) << Prec) + q;
-  cc = u >> Prec;
-  rp0 = ((u << Prec) & GMP_NUMB_MASK) + (np0 & ((CNST_LIMB (1) << Prec) - 1));
-  /* subtract q * q or qhl*2^(2*Prec) from rp */
+  /* rp0 <= 2*sp0 < 2^(Prec + 1) */
+  rp0 = (rp0 << (Prec - 1)) + (np0 >> (Prec + 1));
+  q = rp0 / sp0;
+  /* q <= 2^Prec, if q = 2^Prec, reduce the overestimate. */
+  q -= q >> Prec;
+  /* now we have q < 2^Prec */
+  u = rp0 - q * sp0;
+  /* now we have (rp[0]<<Prec + np0>>Prec)/2 = q * sp0 + u */
+  sp0 = (sp0 << Prec) | q;
+  cc = u >> (Prec - 1);
+  rp0 = ((u << (Prec + 1)) & GMP_NUMB_MASK) + (np0 & ((CNST_LIMB (1) << (Prec + 1)) - 1));
+  /* subtract q * q from rp */
   q2 = q * q;
-  cc -= (rp0 < q2) + qhl;
+  cc -= rp0 < q2;
   rp0 -= q2;
-  /* now subtract 2*q*2^Prec + 2^(2*Prec) if qhl is set */
   if (cc < 0)
     {
-      if (sp0 != 0)
-	{
-	  rp0 += sp0;
-	  cc += rp0 < sp0;
-	}
-      else
-	cc++;
+      rp0 += sp0;
+      cc += rp0 < sp0;
       --sp0;
       rp0 += sp0;
       cc += rp0 < sp0;
@@ -253,10 +241,10 @@ mpn_dc_sqrtrem (mp_ptr sp, mp_ptr np, mp_size_t n)
       mpn_sqr (np + n, sp, l);
       b = q + mpn_sub_n (np, np, np + n, 2 * l);
       c -= (l == h) ? b : mpn_sub_1 (np + 2 * l, np + 2 * l, 1, (mp_limb_t) b);
-      q = mpn_add_1 (sp + l, sp + l, h, q);
 
       if (c < 0)
 	{
+	  q = mpn_add_1 (sp + l, sp + l, h, q);
 #if HAVE_NATIVE_mpn_addlsh1_n
 	  c += mpn_addlsh1_n (np, np, sp, n) + 2 * q;
 #else
@@ -292,30 +280,31 @@ mpn_sqrtrem (mp_ptr sp, mp_ptr rp, mp_srcptr np, mp_size_t nn)
   ASSERT (! MPN_OVERLAP_P (sp, (nn + 1) / 2, np, nn));
 
   high = np[nn - 1];
-  if (nn == 1)
-    if (high & (GMP_NUMB_HIGHBIT | (GMP_NUMB_HIGHBIT >> 1)))
+  if (high & (GMP_NUMB_HIGHBIT | (GMP_NUMB_HIGHBIT / 2)))
+    c = 0;
+  else
+    {
+      count_leading_zeros (c, high);
+      c -= GMP_NAIL_BITS;
+
+      c = c / 2; /* we have to shift left by 2c bits to normalize {np, nn} */
+    }
+  if (nn == 1) {
+    if (c == 0)
       {
 	sp[0] = mpn_sqrtrem1 (&rl, high);
 	if (rp != NULL)
 	  rp[0] = rl;
-	return rl != 0;
       }
     else
       {
-	count_leading_zeros (c, high);
-	c -= GMP_NAIL_BITS;
-
-	c = c / 2; /* we have to shift left by 2c bits to normalize {np, nn} */
 	cc = mpn_sqrtrem1 (&rl, high << (2*c)) >> c;
 	sp[0] = cc;
 	if (rp != NULL)
 	  rp[0] = rl = high - cc*cc;
-	return rl != 0;
       }
-  count_leading_zeros (c, high);
-  c -= GMP_NAIL_BITS;
-
-  c = c / 2; /* we have to shift left by 2c bits to normalize {np, nn} */
+    return rl != 0;
+  }
   tn = (nn + 1) / 2; /* 2*tn is the smallest even integer >= nn */
 
   TMP_MARK;
