@@ -1,3 +1,24 @@
+2015-06-24  Torbjörn Granlund  <torbjorng@google.com>
+
+	* mpn/x86_64/fastsse/com.asm: Disalllow zero size operands.
+
+	* mpn/x86_64/fastsse/copyi.asm: Suppress looping in basecase code.
+
+2015-06-23 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* mpn/generic/sqrtrem.c (mpn_sqrtrem2): Simplify branches.
+	(mpn_dc_sqrtrem): Don't compute remainder if not needed.
+
+2015-06-23  Torbjörn Granlund  <torbjorng@google.com>
+
+	* gmp-impl.h: Remove K&R stringize support.
+	* tests/devel/try.c: Likewise.
+	* tests/t-constants.c: Likewise.
+	* tests/mpf/t-fits.c: Likewise.
+	* tests/mpz/t-fits.c: Likewise.
+
+	* configure.ac (AC_C_STRINGIZE): Remove.
+
 2015-06-15 Marco Bodrato <bodrato@mail.dm.unipi.it>
 
 	* tests/devel/try.c: Support mpn_sqrt (sqrtrem with remainder = NULL).
