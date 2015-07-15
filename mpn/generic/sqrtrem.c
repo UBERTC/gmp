@@ -297,7 +297,7 @@ mpn_divappr_q (mp_ptr qp, mp_srcptr np, mp_size_t nn, mp_srcptr dp, mp_size_t dn
    Assumes {np, 2n} is semi-normalized, i.e. np[2n-1] != 0
    where B=2^GMP_NUMB_BITS.  */
 static int
-mpn_dc_sqrt (mp_ptr sp, mp_srcptr np, mp_size_t n, int s)
+mpn_dc_sqrt (mp_ptr sp, mp_srcptr np, mp_size_t n, int nsh)
 {
   mp_limb_t q;			/* carry out of {sp, n} */
   int c;			/* carry out of remainder */
@@ -307,24 +307,25 @@ mpn_dc_sqrt (mp_ptr sp, mp_srcptr np, mp_size_t n, int s)
   TMP_MARK;
 
   ASSERT (np[2 * n - 1] != 0);
-  ASSERT (n > 2);
+  ASSERT (n > 4);
+  ASSERT (nsh < GMP_NUMB_BITS / 2);
 
   l = (n - 1) / 2;
   h = n - l;
-  ASSERT (n >= l + 2 && l + 2 >= h && h > l && l > 0);
+  ASSERT (n >= l + 2 && l + 2 >= h && h > l && l > 1);
   scratch = TMP_ALLOC_LIMBS (l + 2 * n + 5 - USE_DIVAPPR_Q); /* n + 2-USE_DIVAPPR_Q */
   tp = scratch + n + 2 - USE_DIVAPPR_Q; /* n + h + 1, but tp [-1] is writable */
-  if (s != 0)
+  if (nsh != 0)
     {
       int o = 1; /* Should be o = (l > 1) */;
-      ASSERT_NOCARRY (mpn_lshift (tp - o, np + l - 1 - o, n + h + 1 + o, 2 * s));
+      ASSERT_NOCARRY (mpn_lshift (tp - o, np + l - 1 - o, n + h + 1 + o, 2 * nsh));
     }
   else
     MPN_COPY (tp, np + l - 1, n + h + 1);
   q = mpn_dc_sqrtrem (sp + l, tp + l + 1, h, 0, scratch);
   if (q != 0)
     ASSERT_CARRY (mpn_sub_n (tp + l + 1, tp + l + 1, sp + l, h));
-  qp = tp + n + 1; /* n + 2 */
+  qp = tp + n + 1; /* l + 2 */
 #if USE_DIVAPPR_Q
   mpn_divappr_q (qp, tp, n + 1, sp + l, h, scratch);
 #else
@@ -343,7 +344,7 @@ mpn_dc_sqrt (mp_ptr sp, mp_srcptr np, mp_size_t n, int s)
       mpn_rshift (sp, qp + 1, l, 1);
       sp[l - 1] |= q << (GMP_NUMB_BITS - 1);
       if (((qp[0] >> (2 + USE_DIVAPPR_Q)) | /* < 3 + 4*USE_DIVAPPR_Q */
-	   (qp[1] & ((CNST_LIMB(2) << s) - 1))) == 0)
+	   (qp[1] & ((CNST_LIMB(2) << nsh) - 1))) == 0)
 	{
 	  mp_limb_t cy;
 	  /* Approximation is not good enough, the extra limb(+ s bits)
@@ -368,6 +369,10 @@ mpn_dc_sqrt (mp_ptr sp, mp_srcptr np, mp_size_t n, int s)
 	      ASSERT_NOCARRY (mpn_add_1 (tp + 1 + h, tp + 1 + h, l, cy));
 	      MPN_DECR_U (sp, l, 1);
 	    }
+	  /* Can the root be exact when a correction was needed? We
+	     did not find an example, but it depends on divappr
+	     internals, and we can not assume it true in general...*/
+	  /* else */
 #else /* WANT_ASSERT */
 	  ASSERT (mpn_cmp (tp + 1 + h, scratch + h, l) == 0);
 #endif
@@ -378,9 +383,9 @@ mpn_dc_sqrt (mp_ptr sp, mp_srcptr np, mp_size_t n, int s)
 	      c = mpn_cmp (tp + 1, scratch + l, l);
 	      if (c == 0)
 		{
-		  if (s != 0)
+		  if (nsh != 0)
 		    {
-		      mpn_lshift (tp, np, l, 2 * s);
+		      mpn_lshift (tp, np, l, 2 * nsh);
 		      np = tp;
 		    }
 		  c = mpn_cmp (np, scratch, l);
@@ -395,8 +400,8 @@ mpn_dc_sqrt (mp_ptr sp, mp_srcptr np, mp_size_t n, int s)
     }
   TMP_FREE;
 
-  if (s != 0)
-    mpn_rshift (sp, sp, n, s);
+  if (nsh != 0)
+    mpn_rshift (sp, sp, n, nsh);
   return c;
 }
 
@@ -446,23 +451,20 @@ mpn_sqrtrem (mp_ptr sp, mp_ptr rp, mp_srcptr np, mp_size_t nn)
   tn = (nn + 1) / 2; /* 2*tn is the smallest even integer >= nn */
 
   TMP_MARK;
-  if ((rp == NULL) && (nn > 9))
+  if ((rp == NULL) && (nn > 8))
     if ((nn & 1) == 0)
       return mpn_dc_sqrt (sp, np, tn, c);
     else
       {
-      mp_limb_t mask;
-      TMP_ALLOC_LIMBS_2 (rp, nn + 1, tp, tn / 2 + 1);
-      MPN_ZERO (rp, 1);
-      if (c != 0)
-	mpn_lshift (rp + 1, np, nn, 2 * c);
-      else
+	rp = TMP_ALLOC_LIMBS (nn + 1);
+	rp[0] = 0;
 	MPN_COPY (rp + 1, np, nn);
-      c += GMP_NUMB_BITS / 2;		/* c now represents k */
-      mask = (CNST_LIMB (1) << c) - 2;
-      rn = tn;
-      rn += (rp[rn] = mpn_dc_sqrtrem (sp, rp, rn, mask, tp));
-      mpn_rshift (sp, sp, tn, c);
+	/* FIXME: mpn_dc_sqrt already does copies and shifts
+	   internally, it should support c > GMP_NUMB_BITS / 2 ...*/ 
+	rn = mpn_dc_sqrt (sp, rp, tn, c);
+	TMP_FREE;
+	mpn_rshift (sp, sp, tn, GMP_NUMB_BITS / 2);
+	return rn;
       }
   else if ((nn & 1) != 0 || c > 0)
     {
@@ -503,10 +505,12 @@ mpn_sqrtrem (mp_ptr sp, mp_ptr rp, mp_srcptr np, mp_size_t nn)
     }
   else
     {
-      if (rp == NULL)
-	rp = TMP_ALLOC_LIMBS (nn);
       if (rp != np)
-	MPN_COPY (rp, np, nn);
+	{
+	  if (rp == NULL) /* nn <= 8 */
+	    rp = TMP_SALLOC_LIMBS (nn);
+	  MPN_COPY (rp, np, nn);
+	}
       rn = tn + (rp[tn] = mpn_dc_sqrtrem (sp, rp, tn, 0, TMP_ALLOC_LIMBS(tn / 2 + 1)));
     }
 
