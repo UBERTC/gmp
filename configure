@@ -1494,19 +1494,19 @@ Optional Features:
   --enable-maintainer-mode
                           enable make rules and dependencies not useful (and
                           sometimes confusing) to the casual installer
-  --enable-assert         enable ASSERT checking [[default=no]]
-  --enable-alloca         how to get temp memory [[default=reentrant]]
-  --enable-cxx            enable C++ support [[default=no]]
-  --enable-assembly       enable the use of assembly loops [[default=yes]]
-  --enable-fft            enable FFTs for multiplication [[default=yes]]
+  --enable-assert         enable ASSERT checking [default=no]
+  --enable-alloca         how to get temp memory [default=reentrant]
+  --enable-cxx            enable C++ support [default=no]
+  --enable-assembly       enable the use of assembly loops [default=yes]
+  --enable-fft            enable FFTs for multiplication [default=yes]
   --enable-old-fft-full   enable old mpn_mul_fft_full for multiplication
-                          [[default=no]]
-  --enable-nails          use nails on limbs [[default=no]]
-  --enable-profiling      build with profiler support [[default=no]]
-  --enable-fat            build a fat binary on systems that support it
-                          [[default=no]]
-  --enable-minithres      choose minimal thresholds for testing [[default=no]]
-  --enable-fake-cpuid     enable GMP_CPU_TYPE faking cpuid [[default=no]]
+                          [default=no]
+  --enable-nails          use nails on limbs [default=no]
+  --enable-profiling      build with profiler support [default=no]
+  --enable-fat            build fat libraries on systems that support it
+                          [default=no]
+  --enable-minithres      choose minimal thresholds for testing [default=no]
+  --enable-fake-cpuid     enable GMP_CPU_TYPE faking cpuid [default=no]
   --enable-shared[=PKGS]  build shared libraries [default=yes]
   --enable-static[=PKGS]  build static libraries [default=yes]
   --enable-fast-install[=PKGS]
@@ -1516,8 +1516,7 @@ Optional Features:
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
-  --with-readline         readline support in calc demo program
-                          [[default=detect]]
+  --with-readline         readline support in demo programs [default=detect]
   --with-pic[=PKGS]       try to use only PIC/non-PIC objects [default=use
                           both]
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
@@ -3113,7 +3112,7 @@ case $host_os in *\ *) host_os=`echo "$host_os" | sed 's/ /-/g'`;; esac
 
 
 
-am__api_version='1.14'
+am__api_version='1.15'
 
 # Find a good install program.  We prefer a C program (faster),
 # so one script is as good as another.  But avoid the broken or
@@ -3285,8 +3284,8 @@ test "$program_suffix" != NONE &&
 ac_script='s/[\\$]/&&/g;s/;s,x,x,$//'
 program_transform_name=`$as_echo "$program_transform_name" | sed "$ac_script"`
 
-# expand $ac_aux_dir to an absolute path
-am_aux_dir=`cd $ac_aux_dir && pwd`
+# Expand $ac_aux_dir to an absolute path.
+am_aux_dir=`cd "$ac_aux_dir" && pwd`
 
 if test x"${MISSING+set}" != xset; then
   case $am_aux_dir in
@@ -3305,7 +3304,7 @@ else
 $as_echo "$as_me: WARNING: 'missing' script is too old or missing" >&2;}
 fi
 
-if test x"${install_sh}" != xset; then
+if test x"${install_sh+set}" != xset; then
   case $am_aux_dir in
   *\ * | *\	*)
     install_sh="\${SHELL} '$am_aux_dir/install-sh'" ;;
@@ -3633,8 +3632,8 @@ MAKEINFO=${MAKEINFO-"${am_missing_run}makeinfo"}
 # <http://lists.gnu.org/archive/html/automake/2012-07/msg00014.html>
 mkdir_p='$(MKDIR_P)'
 
-# We need awk for the "check" target.  The system "awk" is bad on
-# some platforms.
+# We need awk for the "check" target (and possibly the TAP driver).  The
+# system "awk" is bad on some platforms.
 # Always define AMTAR for backward compatibility.  Yes, it's still used
 # in the wild :-(  We should find a proper way to deprecate it ...
 AMTAR='$${TAR-tar}'
@@ -3691,6 +3690,7 @@ END
     as_fn_error $? "Your 'rm' program is bad, sorry." "$LINENO" 5
   fi
 fi
+
 ac_config_headers="$ac_config_headers config.h:config.in"
 
 
@@ -4259,7 +4259,6 @@ echo "include_mpn(\`alpha/default.m4')" >> $gmp_tmpconfigm4i
   arm*-*-*)
     gcc_cflags="$gcc_cflags $fomit_frame_pointer"
     gcc_cflags_optlist="arch fpmode neon tune"
-    gcc_cflags_maybe="-marm"
     gcc_testlist="gcc-arm-umodsi"
 
 echo "include_mpn(\`arm/arm-defs.m4')" >> $gmp_tmpconfigm4i
@@ -4312,23 +4311,23 @@ echo "include_mpn(\`arm/arm-defs.m4')" >> $gmp_tmpconfigm4i
 	gcc_cflags_arch="-march=armv7-a"
 	;;
       armcortexa7)
-	path="arm/v6t2 arm/v6 arm/v5 arm"
+	path="arm/v7a/cora7 arm/v6t2 arm/v6 arm/v5 arm"
 	gcc_cflags_arch="-march=armv7-a"
 	gcc_cflags_tune="-mtune=cortex-a7"
 	;;
       armcortexa7neon)
-	path="arm/neon arm/v6t2 arm/v6 arm/v5 arm"
+	path="arm/neon arm/v7a/cora7 arm/v6t2 arm/v6 arm/v5 arm"
 	gcc_cflags_arch="-march=armv7-a"
 	gcc_cflags_neon="-mfpu=neon"
 	gcc_cflags_tune="-mtune=cortex-a7"
 	;;
       armcortexa8)
-	path="arm/v6t2 arm/v6 arm/v5 arm"
+	path="arm/v7a/cora8 arm/v6t2 arm/v6 arm/v5 arm"
 	gcc_cflags_arch="-march=armv7-a"
 	gcc_cflags_tune="-mtune=cortex-a8"
 	;;
       armcortexa8neon)
-	path="arm/neon arm/v6t2 arm/v6 arm/v5 arm"
+	path="arm/neon arm/v7a/cora8 arm/v6t2 arm/v6 arm/v5 arm"
 	gcc_cflags_arch="-march=armv7-a"
 	gcc_cflags_neon="-mfpu=neon"
 	gcc_cflags_tune="-mtune=cortex-a8"
@@ -4738,7 +4737,7 @@ echo "include_mpn(\`mips32/mips-defs.m4')" >> $gmp_tmpconfigm4i
 		    cpu_path="p7 p5 p4 p3-p7" ;;
       power[89])  gcc_cflags_cpu="-mtune=power8 -mtune=power7 -mtune=power5"
 		    xlc_cflags_arch="-qarch=pwr8 -qarch=pwr7 -qarch=pwr5"
-		    cpu_path="p7 p5 p4 p3-p7" ;;
+		    cpu_path="p8 p7 p5 p4 p3-p7" ;;
     esac
 
     case $host in
@@ -23008,35 +23007,6 @@ _ACEOF
 fi
 
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for preprocessor stringizing operator" >&5
-$as_echo_n "checking for preprocessor stringizing operator... " >&6; }
-if ${ac_cv_c_stringize+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#define x(y) #y
-
-char *s = x(teststring);
-_ACEOF
-if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
-  $EGREP "#teststring" >/dev/null 2>&1; then :
-  ac_cv_c_stringize=no
-else
-  ac_cv_c_stringize=yes
-fi
-rm -f conftest*
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_c_stringize" >&5
-$as_echo "$ac_cv_c_stringize" >&6; }
-if test $ac_cv_c_stringize = yes; then
-
-$as_echo "#define HAVE_STRINGIZE 1" >>confdefs.h
-
-fi
-
-
 # FIXME: Really want #ifndef __cplusplus around the #define volatile
 # replacement autoconf gives, since volatile is always available in C++.
 # But we don't use it in C++ currently.
@@ -24418,7 +24388,7 @@ gmp_mpn_functions="$extra_functions					   \
   mulmid_basecase toom42_mulmid mulmid_n mulmid				   \
   random random2 pow_1							   \
   rootrem sqrtrem sizeinbase get_str set_str				   \
-  scan0 scan1 popcount hamdist cmp					   \
+  scan0 scan1 popcount hamdist cmp zero_p				   \
   perfsqr perfpow							   \
   gcd_1 gcd gcdext_1 gcdext gcd_subdiv_step				   \
   gcdext_lehmer								   \

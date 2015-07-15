@@ -413,9 +413,6 @@ see https://www.gnu.org/licenses/.
 /* Define to 1 if you have the `strerror' function. */
 #undef HAVE_STRERROR
 
-/* Define to 1 if cpp supports the ANSI # stringizing operator. */
-#undef HAVE_STRINGIZE
-
 /* Define to 1 if you have the <strings.h> header file. */
 #undef HAVE_STRINGS_H
 
