@@ -1,3 +1,57 @@
+2015-08-29  Torbjörn Granlund  <torbjorng@google.com>
+
+	* mpn/x86_64/fat/fat.c (fake_cpuid_table): Add CPU aliases.
+
+2015-08-25 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* configure.ac (AH_VERBATIM): Add HAVE_NATIVE_mpn_mullo_basecase.
+	* mpn/generic/sqrlo.c (mpn_sqrlo): Use mullo_basecase when faster.
+	* mpn/generic/sqrlo_basecase.c: More readable #defines.
+	
+	* tune/tuneup.c (tune_sqrlo): New function to tune sqrlo thresholds.
+	(all): Call it, after multiplication and FFT.
+	* tune/Makefile.am (TUNE_MPN_SRCS_BASIC): Add sqrlo{,_basecase}.c .
+	* gmp-impl.h: Add all SQRLO_*_THRESHOLD* defs, for tuning and default.
+	* mpn/generic/sqrlo.c: Remove default threshold definitions.
+	* mpn/generic/sqrlo_basecase.c: Use SQRLO_DC_THRESHOLD_LIMIT.
+	* mpn/minithres/gmp-mparam.h: New SQRLO_*_THRESHOLDs.
+
+	* tune/tuneup.c (tune_mullo): Set MULLO_MUL_N_THRESHOLD to never
+	whenever the FFT threshold does not exist.
+
+	* mpf/cmp.c: Remove some branches.
+
+2015-08-25  Torbjörn Granlund  <torbjorng@google.com>
+
+	* mpn/x86_64/x86_64-defs.m4: Output computed numbers in base-10 instead
+	of base-16 to avoid bugs on Solaris, FreeBSD, and old NetBSD.
+
+2015-08-23  Torbjörn Granlund  <torbjorng@google.com>
+
+	* mpn/x86_64/fat/fat.c (fake_cpuid_table): Add more entries, handle
+	Broadwell separately.
+
+	* configure.ac (fat_path): Add coreibwl.
+
+2015-08-18 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* mpn/generic/rootrem.c (logbased_root): New function.
+	(mpn_rootrem_internal): Use it to estimate highest 9 bits of the root.
+
+	* gmp-impl.h (MPQ_PTR_SWAP, MPQ_SRCPTR_SWAP): New macros.
+
+2015-08-17  Torbjörn Granlund  <torbjorng@google.com>
+
+	* acinclude.m4 (X86_64_PATTERN): Add skylake.
+	* config.guess: Corresponding changes.
+	* config.sub: Corresponding changes.
+	* configure.ac: Corresponding changes.
+	* mpn/x86_64/skylake/gmp-mparam.h: New file.
+
+2015-08-15  Torbjörn Granlund  <torbjorng@google.com>
+
+	* mpn/generic/mullo_basecase.c: Provide alternative code, make default.
+
 2015-08-04 Marco Bodrato <bodrato@mail.dm.unipi.it>
 
 	* tests/refmpn.c (refmpn_sqrlo): New function.
@@ -12,10 +66,15 @@
 	* tests/mpn/Makefile.am (check_PROGRAMS): Add new test.
 	* tests/devel/try.c: Support mpn_sqrlo and mpn_sqrlo_basecase.
 
-	* tune/common.c (speed_mpn_sqrlo{,_basecase}): New functions. 
+	* tune/common.c (speed_mpn_sqrlo{,_basecase}): New functions.
 	* tune/speed.c: Support new functions.
 	* tune/speed.h (SPEED_ROUTINE_MPN_MULLO_BASECASE): Update.
 	(SPEED_ROUTINE_MPN_SQRLO): New macro.
+
+	* mpn/generic/rootrem.c: Avoid divisions if not needed.
+
+	* tests/mpn/t-broot.c: Test also k=1.
+	* mpz/aorsmul_i.c: Move branches out of main line.
 
 2015-07-28 Marco Bodrato <bodrato@mail.dm.unipi.it>
 
