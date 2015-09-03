@@ -2,7 +2,7 @@
 
    Contributed to the GNU project by Niels Möller
 
-Copyright 1991-1997, 1999-2014 Free Software Foundation, Inc.
+Copyright 1991-1997, 1999-2015 Free Software Foundation, Inc.
 
 This file is part of the GNU MP Library.
 
@@ -378,7 +378,11 @@ mpn_normalized_size (mp_srcptr xp, mp_size_t n)
   return n;
 }
 
-#define mpn_zero_p(xp, n) (mpn_normalized_size ((xp), (n)) == 0)
+int
+mpn_zero_p(mp_srcptr rp, mp_size_t n)
+{
+  return mpn_normalized_size (rp, n) == 0;
+}
 
 void
 mpn_zero (mp_ptr rp, mp_size_t n)

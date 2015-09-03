@@ -105,7 +105,7 @@ check_PROGRAMS = t-asmtype$(EXEEXT) t-aors_1$(EXEEXT) \
 	t-toom6h$(EXEEXT) t-toom8h$(EXEEXT) t-toom2-sqr$(EXEEXT) \
 	t-toom3-sqr$(EXEEXT) t-toom4-sqr$(EXEEXT) t-toom6-sqr$(EXEEXT) \
 	t-toom8-sqr$(EXEEXT) t-mul$(EXEEXT) t-mullo$(EXEEXT) \
-	t-mulmod_bnm1$(EXEEXT) t-sqrmod_bnm1$(EXEEXT) \
+	t-sqrlo$(EXEEXT) t-mulmod_bnm1$(EXEEXT) t-sqrmod_bnm1$(EXEEXT) \
 	t-mulmid$(EXEEXT) t-hgcd$(EXEEXT) t-hgcd_appr$(EXEEXT) \
 	t-matrix22$(EXEEXT) t-invert$(EXEEXT) t-div$(EXEEXT) \
 	t-bdiv$(EXEEXT) t-broot$(EXEEXT) t-brootinv$(EXEEXT) \
@@ -256,6 +256,11 @@ t_sizeinbase_OBJECTS = t-sizeinbase.$(OBJEXT)
 t_sizeinbase_LDADD = $(LDADD)
 t_sizeinbase_DEPENDENCIES = $(top_builddir)/tests/libtests.la \
 	$(top_builddir)/libgmp.la
+t_sqrlo_SOURCES = t-sqrlo.c
+t_sqrlo_OBJECTS = t-sqrlo.$(OBJEXT)
+t_sqrlo_LDADD = $(LDADD)
+t_sqrlo_DEPENDENCIES = $(top_builddir)/tests/libtests.la \
+	$(top_builddir)/libgmp.la
 t_sqrmod_bnm1_SOURCES = t-sqrmod_bnm1.c
 t_sqrmod_bnm1_OBJECTS = t-sqrmod_bnm1.$(OBJEXT)
 t_sqrmod_bnm1_LDADD = $(LDADD)
@@ -389,21 +394,21 @@ SOURCES = logic.c t-aors_1.c t-asmtype.c t-bdiv.c t-broot.c \
 	t-hgcd_appr.c t-instrument.c t-invert.c t-iord_u.c \
 	t-matrix22.c t-minvert.c t-mod_1.c t-mp_bases.c t-mul.c \
 	t-mullo.c t-mulmid.c t-mulmod_bnm1.c t-perfsqr.c t-scan.c \
-	t-sizeinbase.c t-sqrmod_bnm1.c t-toom2-sqr.c t-toom22.c \
-	t-toom3-sqr.c t-toom32.c t-toom33.c t-toom4-sqr.c t-toom42.c \
-	t-toom43.c t-toom44.c t-toom52.c t-toom53.c t-toom54.c \
-	t-toom6-sqr.c t-toom62.c t-toom63.c t-toom6h.c t-toom8-sqr.c \
-	t-toom8h.c
+	t-sizeinbase.c t-sqrlo.c t-sqrmod_bnm1.c t-toom2-sqr.c \
+	t-toom22.c t-toom3-sqr.c t-toom32.c t-toom33.c t-toom4-sqr.c \
+	t-toom42.c t-toom43.c t-toom44.c t-toom52.c t-toom53.c \
+	t-toom54.c t-toom6-sqr.c t-toom62.c t-toom63.c t-toom6h.c \
+	t-toom8-sqr.c t-toom8h.c
 DIST_SOURCES = logic.c t-aors_1.c t-asmtype.c t-bdiv.c t-broot.c \
 	t-brootinv.c t-div.c t-divrem_1.c t-fat.c t-get_d.c t-hgcd.c \
 	t-hgcd_appr.c t-instrument.c t-invert.c t-iord_u.c \
 	t-matrix22.c t-minvert.c t-mod_1.c t-mp_bases.c t-mul.c \
 	t-mullo.c t-mulmid.c t-mulmod_bnm1.c t-perfsqr.c t-scan.c \
-	t-sizeinbase.c t-sqrmod_bnm1.c t-toom2-sqr.c t-toom22.c \
-	t-toom3-sqr.c t-toom32.c t-toom33.c t-toom4-sqr.c t-toom42.c \
-	t-toom43.c t-toom44.c t-toom52.c t-toom53.c t-toom54.c \
-	t-toom6-sqr.c t-toom62.c t-toom63.c t-toom6h.c t-toom8-sqr.c \
-	t-toom8h.c
+	t-sizeinbase.c t-sqrlo.c t-sqrmod_bnm1.c t-toom2-sqr.c \
+	t-toom22.c t-toom3-sqr.c t-toom32.c t-toom33.c t-toom4-sqr.c \
+	t-toom42.c t-toom43.c t-toom44.c t-toom52.c t-toom53.c \
+	t-toom54.c t-toom6-sqr.c t-toom62.c t-toom63.c t-toom6h.c \
+	t-toom8-sqr.c t-toom8h.c
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -945,6 +950,10 @@ t-sizeinbase$(EXEEXT): $(t_sizeinbase_OBJECTS) $(t_sizeinbase_DEPENDENCIES) $(EX
 	@rm -f t-sizeinbase$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(t_sizeinbase_OBJECTS) $(t_sizeinbase_LDADD) $(LIBS)
 
+t-sqrlo$(EXEEXT): $(t_sqrlo_OBJECTS) $(t_sqrlo_DEPENDENCIES) $(EXTRA_t_sqrlo_DEPENDENCIES) 
+	@rm -f t-sqrlo$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(t_sqrlo_OBJECTS) $(t_sqrlo_LDADD) $(LIBS)
+
 t-sqrmod_bnm1$(EXEEXT): $(t_sqrmod_bnm1_OBJECTS) $(t_sqrmod_bnm1_DEPENDENCIES) $(EXTRA_t_sqrmod_bnm1_DEPENDENCIES) 
 	@rm -f t-sqrmod_bnm1$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(t_sqrmod_bnm1_OBJECTS) $(t_sqrmod_bnm1_LDADD) $(LIBS)
@@ -1455,6 +1464,13 @@ t-mul.log: t-mul$(EXEEXT)
 t-mullo.log: t-mullo$(EXEEXT)
 	@p='t-mullo$(EXEEXT)'; \
 	b='t-mullo'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+t-sqrlo.log: t-sqrlo$(EXEEXT)
+	@p='t-sqrlo$(EXEEXT)'; \
+	b='t-sqrlo'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \

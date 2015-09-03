@@ -677,6 +677,19 @@ __GMP_DECLSPEC void  __gmp_tmp_debug_free (const char *, int, int,
     (y) = __mpz_srcptr_swap__tmp;					\
   } while (0)
 
+#define MPQ_PTR_SWAP(x, y)						\
+  do {                                                                  \
+    mpq_ptr __mpq_ptr_swap__tmp = (x);					\
+    (x) = (y);                                                          \
+    (y) = __mpq_ptr_swap__tmp;						\
+  } while (0)
+#define MPQ_SRCPTR_SWAP(x, y)                                           \
+  do {                                                                  \
+    mpq_srcptr __mpq_srcptr_swap__tmp = (x);                            \
+    (x) = (y);                                                          \
+    (y) = __mpq_srcptr_swap__tmp;                                       \
+  } while (0)
+
 
 /* Enhancement: __gmp_allocate_func could have "__attribute__ ((malloc))",
    but current gcc (3.0) doesn't seem to support that.  */
@@ -1083,6 +1096,12 @@ __GMP_DECLSPEC void mpn_mullo_basecase (mp_ptr, mp_srcptr, mp_srcptr, mp_size_t)
 #define mpn_sqr_basecase __MPN(sqr_basecase)
 __GMP_DECLSPEC void mpn_sqr_basecase (mp_ptr, mp_srcptr, mp_size_t);
 #endif
+
+#define mpn_sqrlo __MPN(sqrlo)
+__GMP_DECLSPEC void mpn_sqrlo (mp_ptr, mp_srcptr, mp_size_t);
+
+#define mpn_sqrlo_basecase __MPN(sqrlo_basecase)
+__GMP_DECLSPEC void mpn_sqrlo_basecase (mp_ptr, mp_srcptr, mp_size_t);
 
 #define mpn_mulmid_basecase __MPN(mulmid_basecase)
 __GMP_DECLSPEC void mpn_mulmid_basecase (mp_ptr, mp_srcptr, mp_size_t, mp_srcptr, mp_size_t);
@@ -1825,35 +1844,35 @@ __GMP_DECLSPEC void mpn_copyd (mp_ptr, mp_srcptr, mp_size_t);
    would be good when on a GNU system.  */
 
 #if HAVE_HOST_CPU_FAMILY_power || HAVE_HOST_CPU_FAMILY_powerpc
+#define MPN_FILL(dst, n, f)						\
+  do {									\
+    mp_ptr __dst = (dst) - 1;						\
+    mp_size_t __n = (n);						\
+    ASSERT (__n > 0);							\
+    do									\
+      *++__dst = (f);							\
+    while (--__n);							\
+  } while (0)
+#endif
+
+#ifndef MPN_FILL
+#define MPN_FILL(dst, n, f)						\
+  do {									\
+    mp_ptr __dst = (dst);						\
+    mp_size_t __n = (n);						\
+    ASSERT (__n > 0);							\
+    do									\
+      *__dst++ = (f);							\
+    while (--__n);							\
+  } while (0)
+#endif
+
 #define MPN_ZERO(dst, n)						\
   do {									\
     ASSERT ((n) >= 0);							\
     if ((n) != 0)							\
-      {									\
-	mp_ptr __dst = (dst) - 1;					\
-	mp_size_t __n = (n);						\
-	do								\
-	  *++__dst = 0;							\
-	while (--__n);							\
-      }									\
+      MPN_FILL (dst, n, CNST_LIMB (0));					\
   } while (0)
-#endif
-
-#ifndef MPN_ZERO
-#define MPN_ZERO(dst, n)						\
-  do {									\
-    ASSERT ((n) >= 0);							\
-    if ((n) != 0)							\
-      {									\
-	mp_ptr __dst = (dst);						\
-	mp_size_t __n = (n);						\
-	do								\
-	  *__dst++ = 0;							\
-	while (--__n);							\
-      }									\
-  } while (0)
-#endif
-
 
 /* On the x86s repe/scasl doesn't seem useful, since it takes many cycles to
    start up and would need to strip a lot of zeros before it'd be faster
@@ -2071,6 +2090,12 @@ __GMP_DECLSPEC mp_limb_t gmp_primesieve (mp_ptr, mp_limb_t);
 #ifndef MULLO_BASECASE_THRESHOLD_LIMIT
 #define MULLO_BASECASE_THRESHOLD_LIMIT  MULLO_BASECASE_THRESHOLD
 #endif
+#ifndef SQRLO_BASECASE_THRESHOLD_LIMIT
+#define SQRLO_BASECASE_THRESHOLD_LIMIT  SQRLO_BASECASE_THRESHOLD
+#endif
+#ifndef SQRLO_DC_THRESHOLD_LIMIT
+#define SQRLO_DC_THRESHOLD_LIMIT  SQRLO_DC_THRESHOLD
+#endif
 
 /* SQR_BASECASE_THRESHOLD is where mpn_sqr_basecase should take over from
    mpn_mul_basecase.  Default is to use mpn_sqr_basecase from 0.  (Note that we
@@ -2117,6 +2142,18 @@ __GMP_DECLSPEC mp_limb_t gmp_primesieve (mp_ptr, mp_limb_t);
 
 #ifndef MULLO_MUL_N_THRESHOLD
 #define MULLO_MUL_N_THRESHOLD      (2*MUL_FFT_THRESHOLD)
+#endif
+
+#ifndef SQRLO_BASECASE_THRESHOLD
+#define SQRLO_BASECASE_THRESHOLD          0  /* never use mpn_sqr_basecase */
+#endif
+
+#ifndef SQRLO_DC_THRESHOLD
+#define SQRLO_DC_THRESHOLD         (MULLO_DC_THRESHOLD)
+#endif
+
+#ifndef SQRLO_SQR_THRESHOLD
+#define SQRLO_SQR_THRESHOLD        (MULLO_MUL_N_THRESHOLD)
 #endif
 
 #ifndef DC_DIV_QR_THRESHOLD
@@ -2327,11 +2364,7 @@ struct fft_table_nk
 /* ASSERT() is a private assertion checking scheme, similar to <assert.h>.
    ASSERT() does the check only if WANT_ASSERT is selected, ASSERT_ALWAYS()
    does it always.  Generally assertions are meant for development, but
-   might help when looking for a problem later too.
-
-   Note that strings shouldn't be used within the ASSERT expression,
-   eg. ASSERT(strcmp(s,"notgood")!=0), since the quotes upset the "expr"
-   used in the !HAVE_STRINGIZE case (ie. K&R).  */
+   might help when looking for a problem later too.  */
 
 #ifdef __LINE__
 #define ASSERT_LINE  __LINE__
@@ -2348,11 +2381,7 @@ struct fft_table_nk
 __GMP_DECLSPEC void __gmp_assert_header (const char *, int);
 __GMP_DECLSPEC void __gmp_assert_fail (const char *, int, const char *) ATTRIBUTE_NORETURN;
 
-#if HAVE_STRINGIZE
 #define ASSERT_FAIL(expr)  __gmp_assert_fail (ASSERT_FILE, ASSERT_LINE, #expr)
-#else
-#define ASSERT_FAIL(expr)  __gmp_assert_fail (ASSERT_FILE, ASSERT_LINE, "expr")
-#endif
 
 #define ASSERT_ALWAYS(expr)						\
   do {									\
@@ -4778,6 +4807,18 @@ extern mp_size_t			mullo_dc_threshold;
 #define MULLO_MUL_N_THRESHOLD		mullo_mul_n_threshold
 extern mp_size_t			mullo_mul_n_threshold;
 
+#undef	SQRLO_BASECASE_THRESHOLD
+#define SQRLO_BASECASE_THRESHOLD	sqrlo_basecase_threshold
+extern mp_size_t			sqrlo_basecase_threshold;
+
+#undef	SQRLO_DC_THRESHOLD
+#define SQRLO_DC_THRESHOLD		sqrlo_dc_threshold
+extern mp_size_t			sqrlo_dc_threshold;
+
+#undef	SQRLO_SQR_THRESHOLD
+#define SQRLO_SQR_THRESHOLD		sqrlo_sqr_threshold
+extern mp_size_t			sqrlo_sqr_threshold;
+
 #undef	MULMID_TOOM42_THRESHOLD
 #define MULMID_TOOM42_THRESHOLD		mulmid_toom42_threshold
 extern mp_size_t			mulmid_toom42_threshold;
@@ -4974,6 +5015,8 @@ extern struct fft_table_nk mpn_fft_table3[2][FFT_TABLE3_SIZE];
 #undef MUL_TOOM22_THRESHOLD_LIMIT
 #undef MUL_TOOM33_THRESHOLD_LIMIT
 #undef MULLO_BASECASE_THRESHOLD_LIMIT
+#undef SQRLO_BASECASE_THRESHOLD_LIMIT
+#undef SQRLO_DC_THRESHOLD_LIMIT
 #undef SQR_TOOM3_THRESHOLD_LIMIT
 #define SQR_TOOM2_MAX_GENERIC           200
 #define MUL_TOOM22_THRESHOLD_LIMIT      700
@@ -4986,6 +5029,8 @@ extern struct fft_table_nk mpn_fft_table3[2][FFT_TABLE3_SIZE];
 #define MUL_TOOM8H_THRESHOLD_LIMIT     1200
 #define SQR_TOOM8_THRESHOLD_LIMIT      1200
 #define MULLO_BASECASE_THRESHOLD_LIMIT  200
+#define SQRLO_BASECASE_THRESHOLD_LIMIT  200
+#define SQRLO_DC_THRESHOLD_LIMIT        400
 #define GET_STR_THRESHOLD_LIMIT         150
 #define FAC_DSC_THRESHOLD_LIMIT        2048
 

@@ -302,6 +302,7 @@ see https://www.gnu.org/licenses/.
 #undef HAVE_NATIVE_mpn_mul_5
 #undef HAVE_NATIVE_mpn_mul_6
 #undef HAVE_NATIVE_mpn_mul_basecase
+#undef HAVE_NATIVE_mpn_mullo_basecase
 #undef HAVE_NATIVE_mpn_nand_n
 #undef HAVE_NATIVE_mpn_nior_n
 #undef HAVE_NATIVE_mpn_popcount
@@ -412,9 +413,6 @@ see https://www.gnu.org/licenses/.
 
 /* Define to 1 if you have the `strerror' function. */
 #undef HAVE_STRERROR
-
-/* Define to 1 if cpp supports the ANSI # stringizing operator. */
-#undef HAVE_STRINGIZE
 
 /* Define to 1 if you have the <strings.h> header file. */
 #undef HAVE_STRINGS_H

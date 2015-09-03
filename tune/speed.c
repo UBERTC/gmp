@@ -91,15 +91,6 @@ SPEED_EXTRA_PROTOS2
 #endif
 
 
-#define MPN_FILL(ptr, size, n)          \
-  do {                                  \
-    mp_size_t __i;                      \
-    ASSERT ((size) >= 0);               \
-    for (__i = 0; __i < (size); __i++)  \
-      (ptr)[__i] = (n);                 \
-  } while (0)
-
-
 #if GMP_LIMB_BITS == 32
 #define GMP_NUMB_0xAA  (CNST_LIMB(0xAAAAAAAA) & GMP_NUMB_MASK)
 #endif
@@ -360,6 +351,8 @@ const struct routine_t {
   { "mpn_mul_fft",       speed_mpn_mul_fft,     FLAG_R_OPTIONAL },
   { "mpn_mul_fft_sqr",   speed_mpn_mul_fft_sqr, FLAG_R_OPTIONAL },
 
+  { "mpn_sqrlo",          speed_mpn_sqrlo           },
+  { "mpn_sqrlo_basecase", speed_mpn_sqrlo_basecase  },
   { "mpn_mullo_n",        speed_mpn_mullo_n         },
   { "mpn_mullo_basecase", speed_mpn_mullo_basecase  },
 
@@ -401,6 +394,8 @@ const struct routine_t {
 
   { "mpn_sqrtrem",       speed_mpn_sqrtrem          },
   { "mpn_rootrem",       speed_mpn_rootrem, FLAG_R  },
+  { "mpn_sqrt",          speed_mpn_sqrt             },
+  { "mpn_root",          speed_mpn_root, FLAG_R     },
 
   { "mpn_fib2_ui",       speed_mpn_fib2_ui,    FLAG_NODATA },
   { "mpz_fib_ui",        speed_mpz_fib_ui,     FLAG_NODATA },

@@ -1494,19 +1494,19 @@ Optional Features:
   --enable-maintainer-mode
                           enable make rules and dependencies not useful (and
                           sometimes confusing) to the casual installer
-  --enable-assert         enable ASSERT checking [[default=no]]
-  --enable-alloca         how to get temp memory [[default=reentrant]]
-  --enable-cxx            enable C++ support [[default=no]]
-  --enable-assembly       enable the use of assembly loops [[default=yes]]
-  --enable-fft            enable FFTs for multiplication [[default=yes]]
+  --enable-assert         enable ASSERT checking [default=no]
+  --enable-alloca         how to get temp memory [default=reentrant]
+  --enable-cxx            enable C++ support [default=no]
+  --enable-assembly       enable the use of assembly loops [default=yes]
+  --enable-fft            enable FFTs for multiplication [default=yes]
   --enable-old-fft-full   enable old mpn_mul_fft_full for multiplication
-                          [[default=no]]
-  --enable-nails          use nails on limbs [[default=no]]
-  --enable-profiling      build with profiler support [[default=no]]
-  --enable-fat            build a fat binary on systems that support it
-                          [[default=no]]
-  --enable-minithres      choose minimal thresholds for testing [[default=no]]
-  --enable-fake-cpuid     enable GMP_CPU_TYPE faking cpuid [[default=no]]
+                          [default=no]
+  --enable-nails          use nails on limbs [default=no]
+  --enable-profiling      build with profiler support [default=no]
+  --enable-fat            build fat libraries on systems that support it
+                          [default=no]
+  --enable-minithres      choose minimal thresholds for testing [default=no]
+  --enable-fake-cpuid     enable GMP_CPU_TYPE faking cpuid [default=no]
   --enable-shared[=PKGS]  build shared libraries [default=yes]
   --enable-static[=PKGS]  build static libraries [default=yes]
   --enable-fast-install[=PKGS]
@@ -1516,8 +1516,7 @@ Optional Features:
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
-  --with-readline         readline support in calc demo program
-                          [[default=detect]]
+  --with-readline         readline support in demo programs [default=detect]
   --with-pic[=PKGS]       try to use only PIC/non-PIC objects [default=use
                           both]
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
@@ -4259,7 +4258,6 @@ echo "include_mpn(\`alpha/default.m4')" >> $gmp_tmpconfigm4i
   arm*-*-*)
     gcc_cflags="$gcc_cflags $fomit_frame_pointer"
     gcc_cflags_optlist="arch fpmode neon tune"
-    gcc_cflags_maybe="-marm"
     gcc_testlist="gcc-arm-umodsi"
 
 echo "include_mpn(\`arm/arm-defs.m4')" >> $gmp_tmpconfigm4i
@@ -4312,23 +4310,23 @@ echo "include_mpn(\`arm/arm-defs.m4')" >> $gmp_tmpconfigm4i
 	gcc_cflags_arch="-march=armv7-a"
 	;;
       armcortexa7)
-	path="arm/v6t2 arm/v6 arm/v5 arm"
+	path="arm/v7a/cora7 arm/v6t2 arm/v6 arm/v5 arm"
 	gcc_cflags_arch="-march=armv7-a"
 	gcc_cflags_tune="-mtune=cortex-a7"
 	;;
       armcortexa7neon)
-	path="arm/neon arm/v6t2 arm/v6 arm/v5 arm"
+	path="arm/neon arm/v7a/cora7 arm/v6t2 arm/v6 arm/v5 arm"
 	gcc_cflags_arch="-march=armv7-a"
 	gcc_cflags_neon="-mfpu=neon"
 	gcc_cflags_tune="-mtune=cortex-a7"
 	;;
       armcortexa8)
-	path="arm/v6t2 arm/v6 arm/v5 arm"
+	path="arm/v7a/cora8 arm/v6t2 arm/v6 arm/v5 arm"
 	gcc_cflags_arch="-march=armv7-a"
 	gcc_cflags_tune="-mtune=cortex-a8"
 	;;
       armcortexa8neon)
-	path="arm/neon arm/v6t2 arm/v6 arm/v5 arm"
+	path="arm/neon arm/v7a/cora8 arm/v6t2 arm/v6 arm/v5 arm"
 	gcc_cflags_arch="-march=armv7-a"
 	gcc_cflags_neon="-mfpu=neon"
 	gcc_cflags_tune="-mtune=cortex-a8"
@@ -4518,7 +4516,7 @@ echo "include_mpn(\`ia64/ia64-defs.m4')" >> $gmp_tmpconfigm4i
         path_32="ia64"
         cc_32_cflags=""
         cc_32_cflags_optlist="opt"
-        cc_32_cflags_opt="+O3 +O2 +O1"
+        cc_32_cflags_opt="+O2 +O1"
         gcc_32_cflags="$gcc_cflags -milp32"
         limb_32=longlong
         SPEED_CYCLECOUNTER_OBJ_32=ia64.lo
@@ -4533,7 +4531,7 @@ echo "include_mpn(\`ia64/ia64-defs.m4')" >> $gmp_tmpconfigm4i
         cc_64_cflags="+DD64"
         cc_64_cppflags="+DD64"
         cc_64_cflags_optlist="opt"
-        cc_64_cflags_opt="+O3 +O2 +O1"
+        cc_64_cflags_opt="+O2 +O1"
         gcc_64_cflags="$gcc_cflags -mlp64"
         ;;
     esac
@@ -4738,7 +4736,7 @@ echo "include_mpn(\`mips32/mips-defs.m4')" >> $gmp_tmpconfigm4i
 		    cpu_path="p7 p5 p4 p3-p7" ;;
       power[89])  gcc_cflags_cpu="-mtune=power8 -mtune=power7 -mtune=power5"
 		    xlc_cflags_arch="-qarch=pwr8 -qarch=pwr7 -qarch=pwr5"
-		    cpu_path="p7 p5 p4 p3-p7" ;;
+		    cpu_path="p8 p7 p5 p4 p3-p7" ;;
     esac
 
     case $host in
@@ -5264,7 +5262,7 @@ echo "include_mpn(\`vax/elf.m4')" >> $gmp_tmpconfigm4i
   # mode, in case -m32 has failed not because it's an old gcc, but because
   # it's a dual 32/64-bit gcc without a 32-bit libc, or whatever.
   #
-  i?86*-*-* | k[5-8]*-*-* | pentium*-*-* | athlon-*-* | viac3*-*-* | geode*-*-* | atom-*-* | athlon64-*-* | k8-*-* | k10-*-* | bobcat-*-* | jaguar*-*-* | bulldozer*-*-* | piledriver*-*-* | steamroller*-*-* | excavator*-*-* | pentium4-*-* | atom-*-* | silvermont-*-* | core2-*-* | corei*-*-* | x86_64-*-* | nano-*-* | nehalem*-*-* | westmere*-*-* | sandybridge*-*-* | ivybridge*-*-* | haswell*-*-* | broadwell*-*-*)
+  i?86*-*-* | k[5-8]*-*-* | pentium*-*-* | athlon-*-* | viac3*-*-* | geode*-*-* | atom-*-* | athlon64-*-* | k8-*-* | k10-*-* | bobcat-*-* | jaguar*-*-* | bulldozer*-*-* | piledriver*-*-* | steamroller*-*-* | excavator*-*-* | pentium4-*-* | atom-*-* | silvermont-*-* | core2-*-* | corei*-*-* | x86_64-*-* | nano-*-* | nehalem*-*-* | westmere*-*-* | sandybridge*-*-* | ivybridge*-*-* | haswell*-*-* | broadwell*-*-* | skylake*-*-*)
     abilist="32"
     cclist="gcc icc cc"
     gcc_cflags="$gcc_cflags $fomit_frame_pointer"
@@ -5487,6 +5485,13 @@ echo "include_mpn(\`vax/elf.m4')" >> $gmp_tmpconfigm4i
 	path_64="x86_64/coreibwl x86_64/coreihwl x86_64/coreisbr x86_64/coreinhm x86_64/core2 x86_64"
 	# extra_functions_64="missing"	 # enable for bmi2/adx simulation
 	;;
+      skylake | skylakenoavx)
+	gcc_cflags_cpu="-mtune=skylake -mtune=broadwell -mtune=corei7 -mtune=core2 -mtune=k8"
+	gcc_cflags_arch="-march=skylake -march=broadwell -march=corei7 -march=core2 -march=core2~-mno-sse2 -march=k8 -march=k8~-mno-sse2"
+	path="x86/coreisbr x86/p6/sse2 x86/p6/p3mmx x86/p6/mmx x86/p6 x86/mmx x86"
+	path_64="x86_64/skylake x86_64/coreibwl x86_64/coreihwl x86_64/coreisbr x86_64/coreinhm x86_64/core2 x86_64"
+	# extra_functions_64="missing"	 # enable for bmi2/adx simulation
+	;;
       atom)
 	gcc_cflags_cpu="-mtune=atom -mtune=pentium3"
 	gcc_cflags_arch="-march=atom -march=pentium3"
@@ -5519,7 +5524,7 @@ echo "include_mpn(\`vax/elf.m4')" >> $gmp_tmpconfigm4i
     esac
 
     case $host in
-      athlon64-*-* | k8-*-* | k10-*-* | bobcat-*-* | jaguar*-*-* | bulldozer*-*-* | piledriver*-*-* | steamroller*-*-* | excavator*-*-* | pentium4-*-* | atom-*-* | silvermont-*-* | core2-*-* | corei*-*-* | x86_64-*-* | nano-*-* | nehalem*-*-* | westmere*-*-* | sandybridge*-*-* | ivybridge*-*-* | haswell*-*-* | broadwell*-*-*)
+      athlon64-*-* | k8-*-* | k10-*-* | bobcat-*-* | jaguar*-*-* | bulldozer*-*-* | piledriver*-*-* | steamroller*-*-* | excavator*-*-* | pentium4-*-* | atom-*-* | silvermont-*-* | core2-*-* | corei*-*-* | x86_64-*-* | nano-*-* | nehalem*-*-* | westmere*-*-* | sandybridge*-*-* | ivybridge*-*-* | haswell*-*-* | broadwell*-*-* | skylake*-*-*)
 	cclist_64="gcc cc"
 	gcc_64_cflags="$gcc_cflags -m64"
 	gcc_64_cflags_optlist="cpu arch noavx"
@@ -7130,7 +7135,7 @@ if test $found_compiler = no && test -n "$path"; then
 fi
 
 case $host in
-  i?86*-*-* | k[5-8]*-*-* | pentium*-*-* | athlon-*-* | viac3*-*-* | geode*-*-* | atom-*-* | athlon64-*-* | k8-*-* | k10-*-* | bobcat-*-* | jaguar*-*-* | bulldozer*-*-* | piledriver*-*-* | steamroller*-*-* | excavator*-*-* | pentium4-*-* | atom-*-* | silvermont-*-* | core2-*-* | corei*-*-* | x86_64-*-* | nano-*-* | nehalem*-*-* | westmere*-*-* | sandybridge*-*-* | ivybridge*-*-* | haswell*-*-* | broadwell*-*-*)
+  i?86*-*-* | k[5-8]*-*-* | pentium*-*-* | athlon-*-* | viac3*-*-* | geode*-*-* | atom-*-* | athlon64-*-* | k8-*-* | k10-*-* | bobcat-*-* | jaguar*-*-* | bulldozer*-*-* | piledriver*-*-* | steamroller*-*-* | excavator*-*-* | pentium4-*-* | atom-*-* | silvermont-*-* | core2-*-* | corei*-*-* | x86_64-*-* | nano-*-* | nehalem*-*-* | westmere*-*-* | sandybridge*-*-* | ivybridge*-*-* | haswell*-*-* | broadwell*-*-* | skylake*-*-*)
     # If the user asked for a fat build, override the path and flags set above
     if test $enable_fat = yes; then
       gcc_cflags_cpu=""
@@ -7162,9 +7167,9 @@ case $host in
 	extra_functions_64="$extra_functions_64 fat fat_entry"
 	path_64="x86_64/fat x86_64"
 	fat_path="x86_64 x86_64/fat
-		  x86_64/k8 x86_64/k10 x86_64/bd1 x86_64/bobcat
-		  x86_64/pentium4 x86_64/core2 x86_64/coreinhm x86_64/coreisbr
-		  x86_64/coreihwl x86_64/atom x86_64/silvermont x86_64/nano"
+		  x86_64/k8 x86_64/k10 x86_64/bd1 x86_64/bobcat x86_64/pentium4
+		  x86_64/core2 x86_64/coreinhm x86_64/coreisbr x86_64/coreihwl
+		  x86_64/coreibwl x86_64/atom x86_64/silvermont x86_64/nano"
 	fat_functions="$fat_functions addmul_2 addlsh1_n addlsh2_n sublsh1_n"
       fi
 
@@ -10939,7 +10944,7 @@ done
 # enough assembler.
 #
 case $host in
-  i?86*-*-* | k[5-8]*-*-* | pentium*-*-* | athlon-*-* | viac3*-*-* | geode*-*-* | atom-*-* | athlon64-*-* | k8-*-* | k10-*-* | bobcat-*-* | jaguar*-*-* | bulldozer*-*-* | piledriver*-*-* | steamroller*-*-* | excavator*-*-* | pentium4-*-* | atom-*-* | silvermont-*-* | core2-*-* | corei*-*-* | x86_64-*-* | nano-*-* | nehalem*-*-* | westmere*-*-* | sandybridge*-*-* | ivybridge*-*-* | haswell*-*-* | broadwell*-*-*)
+  i?86*-*-* | k[5-8]*-*-* | pentium*-*-* | athlon-*-* | viac3*-*-* | geode*-*-* | atom-*-* | athlon64-*-* | k8-*-* | k10-*-* | bobcat-*-* | jaguar*-*-* | bulldozer*-*-* | piledriver*-*-* | steamroller*-*-* | excavator*-*-* | pentium4-*-* | atom-*-* | silvermont-*-* | core2-*-* | corei*-*-* | x86_64-*-* | nano-*-* | nehalem*-*-* | westmere*-*-* | sandybridge*-*-* | ivybridge*-*-* | haswell*-*-* | broadwell*-*-* | skylake*-*-*)
     if test "$ABI" = 32; then
       case "$path $fat_path" in
         *mmx*)   { $as_echo "$as_me:${as_lineno-$LINENO}: checking if the assembler knows about MMX instructions" >&5
@@ -23008,35 +23013,6 @@ _ACEOF
 fi
 
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for preprocessor stringizing operator" >&5
-$as_echo_n "checking for preprocessor stringizing operator... " >&6; }
-if ${ac_cv_c_stringize+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#define x(y) #y
-
-char *s = x(teststring);
-_ACEOF
-if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
-  $EGREP "#teststring" >/dev/null 2>&1; then :
-  ac_cv_c_stringize=no
-else
-  ac_cv_c_stringize=yes
-fi
-rm -f conftest*
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_c_stringize" >&5
-$as_echo "$ac_cv_c_stringize" >&6; }
-if test $ac_cv_c_stringize = yes; then
-
-$as_echo "#define HAVE_STRINGIZE 1" >>confdefs.h
-
-fi
-
-
 # FIXME: Really want #ifndef __cplusplus around the #define volatile
 # replacement autoconf gives, since volatile is always available in C++.
 # But we don't use it in C++ currently.
@@ -24418,7 +24394,7 @@ gmp_mpn_functions="$extra_functions					   \
   mulmid_basecase toom42_mulmid mulmid_n mulmid				   \
   random random2 pow_1							   \
   rootrem sqrtrem sizeinbase get_str set_str				   \
-  scan0 scan1 popcount hamdist cmp					   \
+  scan0 scan1 popcount hamdist cmp zero_p				   \
   perfsqr perfpow							   \
   gcd_1 gcd gcdext_1 gcdext gcd_subdiv_step				   \
   gcdext_lehmer								   \
@@ -24426,7 +24402,7 @@ gmp_mpn_functions="$extra_functions					   \
   matrix22_mul matrix22_mul1_inverse_vector				   \
   hgcd_matrix hgcd2 hgcd_step hgcd_reduce hgcd hgcd_appr		   \
   hgcd2_jacobi hgcd_jacobi						   \
-  mullo_n mullo_basecase						   \
+  mullo_n mullo_basecase sqrlo sqrlo_basecase				   \
   toom22_mul toom32_mul toom42_mul toom52_mul toom62_mul		   \
   toom33_mul toom43_mul toom53_mul toom54_mul toom63_mul		   \
   toom44_mul								   \
@@ -26287,7 +26263,7 @@ echo "define(<HAVE_SHARED_THUNKS>,<$gmp_cv_asm_sparc_shared_thunks>)" >> $gmp_tm
 
 
       ;;
-    i?86*-*-* | k[5-8]*-*-* | pentium*-*-* | athlon-*-* | viac3*-*-* | geode*-*-* | atom-*-* | athlon64-*-* | k8-*-* | k10-*-* | bobcat-*-* | jaguar*-*-* | bulldozer*-*-* | piledriver*-*-* | steamroller*-*-* | excavator*-*-* | pentium4-*-* | atom-*-* | silvermont-*-* | core2-*-* | corei*-*-* | x86_64-*-* | nano-*-* | nehalem*-*-* | westmere*-*-* | sandybridge*-*-* | ivybridge*-*-* | haswell*-*-* | broadwell*-*-*)
+    i?86*-*-* | k[5-8]*-*-* | pentium*-*-* | athlon-*-* | viac3*-*-* | geode*-*-* | atom-*-* | athlon64-*-* | k8-*-* | k10-*-* | bobcat-*-* | jaguar*-*-* | bulldozer*-*-* | piledriver*-*-* | steamroller*-*-* | excavator*-*-* | pentium4-*-* | atom-*-* | silvermont-*-* | core2-*-* | corei*-*-* | x86_64-*-* | nano-*-* | nehalem*-*-* | westmere*-*-* | sandybridge*-*-* | ivybridge*-*-* | haswell*-*-* | broadwell*-*-* | skylake*-*-*)
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking if the .align directive accepts an 0x90 fill in .text" >&5
 $as_echo_n "checking if the .align directive accepts an 0x90 fill in .text... " >&6; }

@@ -862,7 +862,7 @@ case $host in
         path_32="ia64"
         cc_32_cflags=""
         cc_32_cflags_optlist="opt"
-        cc_32_cflags_opt="+O3 +O2 +O1"
+        cc_32_cflags_opt="+O2 +O1"
         gcc_32_cflags="$gcc_cflags -milp32"
         limb_32=longlong
         SPEED_CYCLECOUNTER_OBJ_32=ia64.lo
@@ -877,7 +877,7 @@ case $host in
         cc_64_cflags="+DD64"
         cc_64_cppflags="+DD64"
         cc_64_cflags_optlist="opt"
-        cc_64_cflags_opt="+O3 +O2 +O1"
+        cc_64_cflags_opt="+O2 +O1"
         gcc_64_cflags="$gcc_cflags -mlp64"
         ;;
     esac
@@ -1076,7 +1076,7 @@ case $host in
 		    cpu_path="p7 p5 p4 p3-p7" ;;
       [power[89]])  gcc_cflags_cpu="-mtune=power8 -mtune=power7 -mtune=power5"
 		    xlc_cflags_arch="-qarch=pwr8 -qarch=pwr7 -qarch=pwr5"
-		    cpu_path="p7 p5 p4 p3-p7" ;;
+		    cpu_path="p8 p7 p5 p4 p3-p7" ;;
     esac
 
     case $host in
@@ -1800,6 +1800,13 @@ case $host in
 	path_64="x86_64/coreibwl x86_64/coreihwl x86_64/coreisbr x86_64/coreinhm x86_64/core2 x86_64"
 	# extra_functions_64="missing"	 # enable for bmi2/adx simulation
 	;;
+      skylake | skylakenoavx)
+	gcc_cflags_cpu="-mtune=skylake -mtune=broadwell -mtune=corei7 -mtune=core2 -mtune=k8"
+	gcc_cflags_arch="-march=skylake -march=broadwell -march=corei7 -march=core2 -march=core2~-mno-sse2 -march=k8 -march=k8~-mno-sse2"
+	path="x86/coreisbr x86/p6/sse2 x86/p6/p3mmx x86/p6/mmx x86/p6 x86/mmx x86"
+	path_64="x86_64/skylake x86_64/coreibwl x86_64/coreihwl x86_64/coreisbr x86_64/coreinhm x86_64/core2 x86_64"
+	# extra_functions_64="missing"	 # enable for bmi2/adx simulation
+	;;
       atom)
 	gcc_cflags_cpu="-mtune=atom -mtune=pentium3"
 	gcc_cflags_arch="-march=atom -march=pentium3"
@@ -2154,9 +2161,9 @@ case $host in
 	extra_functions_64="$extra_functions_64 fat fat_entry"
 	path_64="x86_64/fat x86_64"
 	fat_path="x86_64 x86_64/fat
-		  x86_64/k8 x86_64/k10 x86_64/bd1 x86_64/bobcat
-		  x86_64/pentium4 x86_64/core2 x86_64/coreinhm x86_64/coreisbr
-		  x86_64/coreihwl x86_64/atom x86_64/silvermont x86_64/nano"
+		  x86_64/k8 x86_64/k10 x86_64/bd1 x86_64/bobcat x86_64/pentium4
+		  x86_64/core2 x86_64/coreinhm x86_64/coreisbr x86_64/coreihwl
+		  x86_64/coreibwl x86_64/atom x86_64/silvermont x86_64/nano"
 	fat_functions="$fat_functions addmul_2 addlsh1_n addlsh2_n sublsh1_n"
       fi
 
@@ -2708,8 +2715,6 @@ AC_TYPE_SIGNAL
 AC_CHECK_TYPES([intmax_t, long double, long long, ptrdiff_t, quad_t,
 		uint_least32_t, intptr_t])
 
-AC_C_STRINGIZE
-
 # FIXME: Really want #ifndef __cplusplus around the #define volatile
 # replacement autoconf gives, since volatile is always available in C++.
 # But we don't use it in C++ currently.
@@ -2862,7 +2867,7 @@ gmp_mpn_functions="$extra_functions					   \
   matrix22_mul matrix22_mul1_inverse_vector				   \
   hgcd_matrix hgcd2 hgcd_step hgcd_reduce hgcd hgcd_appr		   \
   hgcd2_jacobi hgcd_jacobi						   \
-  mullo_n mullo_basecase						   \
+  mullo_n mullo_basecase sqrlo sqrlo_basecase				   \
   toom22_mul toom32_mul toom42_mul toom52_mul toom62_mul		   \
   toom33_mul toom43_mul toom53_mul toom54_mul toom63_mul		   \
   toom44_mul								   \
@@ -3468,6 +3473,7 @@ AH_VERBATIM([HAVE_NATIVE],
 #undef HAVE_NATIVE_mpn_mul_5
 #undef HAVE_NATIVE_mpn_mul_6
 #undef HAVE_NATIVE_mpn_mul_basecase
+#undef HAVE_NATIVE_mpn_mullo_basecase
 #undef HAVE_NATIVE_mpn_nand_n
 #undef HAVE_NATIVE_mpn_nior_n
 #undef HAVE_NATIVE_mpn_popcount

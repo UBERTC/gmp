@@ -37,10 +37,10 @@ C	     cycles/limb     cycles/limb     cycles/limb      good
 C              aligned	      unaligned	      best seen	     for cpu?
 C AMD K8,K9
 C AMD K10	 0.85		 1.64				Y/N
-C AMD bull	 1.4		 1.4				Y
-C AMD pile
-C AMD steam
-C AMD excavator
+C AMD bull	 1.4		 1.4				N
+C AMD pile	 0.77		 0.93				N
+C AMD steam	 ?		 ?
+C AMD excavator	 ?		 ?
 C AMD bobcat
 C AMD jaguar	 0.65		 1.02		opt/0.93	Y/N
 C Intel P4	 2.3		 2.3				Y
@@ -80,7 +80,7 @@ ASM_START()
 PROLOGUE(mpn_copyi)
 	FUNC_ENTRY(3)
 
-	cmp	$3, n
+	cmp	$3, n			C NB: bc code below assumes this limit
 	jc	L(bc)
 
 	test	$8, R8(rp)		C is rp 16-byte aligned?
@@ -151,25 +151,27 @@ L(end):	test	$1, R8(n)
 	FUNC_EXIT()
 	ret
 
-C Basecase code.  Needed for good small operands speed, not for
-C correctness as the above code is currently written.
+C Basecase code.  Needed for good small operands speed, not for correctness as
+C the above code is currently written.  The commented-out lines need to be
+C reinstated if this code is to be used for n > 3, and then the post loop
+C offsets need fixing.
 
 L(bc):	sub	$2, n
 	jc	L(end)
 	ALIGN(16)
 1:	mov	(up), %rax
 	mov	8(up), %rcx
-	lea	16(up), up
+dnl	lea	16(up), up
 	mov	%rax, (rp)
 	mov	%rcx, 8(rp)
-	lea	16(rp), rp
-	sub	$2, n
-	jnc	1b
+dnl	lea	16(rp), rp
+dnl	sub	$2, n
+dnl	jnc	1b
 
 	test	$1, R8(n)
 	jz	L(ret)
-	mov	(up), %rax
-	mov	%rax, (rp)
+	mov	16(up), %rax
+	mov	%rax, 16(rp)
 L(ret):	FUNC_EXIT()
 	ret
 EPILOGUE()
