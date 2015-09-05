@@ -1,3 +1,19 @@
+2015-09-03 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* tests/mpq/t-cmp_z.c (sizes_test): New function, tests sizes.
+
+2015-09-03  Torbjörn Granlund  <torbjorng@google.com>
+
+	* acinclude.m4 (GMP_C_HIDDEN_ALIAS): New.
+
+2015-09-01 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* mpq/cmp.c (mpq_cmp_numden): Cast to avoid over/underflow.
+	* tests/mpn/t-toom22.c (MIN_AN): Use defined value.
+	* tests/mpz/t-fac_ui.c: Check big factorial modulo a larger prime.
+	* mpn/generic/bsqrtinv.c: Use sqrlo+mullo_n instead of powlo(,,3,,).
+	* mpq/div.c: Move a branch out of the normal flow.
+
 2015-08-31  Torbjörn Granlund  <torbjorng@google.com>
 
 	* mpn/x86/fat/fat.c (fake_cpuid_table): Update similarly to
