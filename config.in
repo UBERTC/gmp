@@ -138,6 +138,10 @@ see https://www.gnu.org/licenses/.
 /* Define to 1 if you have the `gettimeofday' function. */
 #undef HAVE_GETTIMEOFDAY
 
+/* Define to 1 if the compiler accepts gcc style __attribute__ ((visibility))
+   and __attribute__ ((alias)) */
+#undef HAVE_HIDDEN_ALIAS
+
 /* Define one of these to 1 for the host CPU family.
    If your CPU is not in any of these families, leave all undefined.
    For an AMD64 chip, define "x86" in ABI=32, but not in ABI=64. */

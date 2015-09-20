@@ -125,8 +125,8 @@ am_libmpf_la_OBJECTS = init.lo init2.lo inits.lo set.lo set_ui.lo \
 	get_str.lo dump.lo size.lo eq.lo reldiff.lo sqrt.lo random2.lo \
 	inp_str.lo out_str.lo add.lo add_ui.lo sub.lo sub_ui.lo \
 	ui_sub.lo mul.lo mul_ui.lo div.lo div_ui.lo cmp.lo cmp_d.lo \
-	cmp_si.lo cmp_ui.lo mul_2exp.lo div_2exp.lo abs.lo neg.lo \
-	get_d.lo get_d_2exp.lo set_dfl_prec.lo set_prc.lo \
+	cmp_z.lo cmp_si.lo cmp_ui.lo mul_2exp.lo div_2exp.lo abs.lo \
+	neg.lo get_d.lo get_d_2exp.lo set_dfl_prec.lo set_prc.lo \
 	set_prc_raw.lo get_dfl_prec.lo get_prc.lo ui_div.lo sqrt_ui.lo \
 	pow_ui.lo urandomb.lo swap.lo get_si.lo get_ui.lo int_p.lo \
 	ceilfloor.lo trunc.lo fits_sint.lo fits_slong.lo \
@@ -363,7 +363,7 @@ libmpf_la_SOURCES = \
   set_q.c iset.c iset_ui.c iset_si.c iset_str.c iset_d.c clear.c clears.c \
   get_str.c dump.c size.c eq.c reldiff.c sqrt.c random2.c inp_str.c out_str.c \
   add.c add_ui.c sub.c sub_ui.c ui_sub.c mul.c mul_ui.c div.c div_ui.c \
-  cmp.c cmp_d.c cmp_si.c cmp_ui.c mul_2exp.c div_2exp.c abs.c neg.c get_d.c \
+  cmp.c cmp_d.c cmp_z.c cmp_si.c cmp_ui.c mul_2exp.c div_2exp.c abs.c neg.c get_d.c \
   get_d_2exp.c set_dfl_prec.c set_prc.c set_prc_raw.c get_dfl_prec.c get_prc.c \
   ui_div.c sqrt_ui.c \
   pow_ui.c urandomb.c swap.c get_si.c get_ui.c int_p.c \
