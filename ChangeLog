@@ -1,5 +1,16 @@
 2015-09-12  Torbjörn Granlund  <torbjorng@google.com>
 
+	* mpf/clear.c, mpf/clears.c, mpf/inits.c, mpq/clear.c, mpq/clears.c
+	* mpq/inits.c, mpz/clear.c, mpz/clears.c, mpz/inits.c:
+	Streamline, use macros.
+	
+2015-09-27 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* mpz/cfdiv_r_2exp.c: Use mpn_neg and MPZ_NEWALLOC.
+	* mpz/cfdiv_q_2exp.c: Use MPZ_REALLOC return value.
+
+2015-09-12  Torbjörn Granlund  <torbjorng@google.com>
+
 	* tests/mpf/t-cmp_si.c (check_data): Set precision reflecting data.
 
 2015-09-11 Marco Bodrato <bodrato@mail.dm.unipi.it>
