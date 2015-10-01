@@ -94,15 +94,15 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-check_PROGRAMS = t-addsub$(EXEEXT) t-cmp$(EXEEXT) t-mul$(EXEEXT) \
-	t-mul_i$(EXEEXT) t-tdiv$(EXEEXT) t-tdiv_ui$(EXEEXT) \
-	t-fdiv$(EXEEXT) t-fdiv_ui$(EXEEXT) t-cdiv_ui$(EXEEXT) \
-	t-gcd$(EXEEXT) t-gcd_ui$(EXEEXT) t-lcm$(EXEEXT) \
-	t-invert$(EXEEXT) dive$(EXEEXT) dive_ui$(EXEEXT) \
-	t-sqrtrem$(EXEEXT) convert$(EXEEXT) io$(EXEEXT) \
-	t-inp_str$(EXEEXT) logic$(EXEEXT) bit$(EXEEXT) t-powm$(EXEEXT) \
-	t-powm_ui$(EXEEXT) t-pow$(EXEEXT) t-div_2exp$(EXEEXT) \
-	reuse$(EXEEXT) t-root$(EXEEXT) t-perfsqr$(EXEEXT) \
+check_PROGRAMS = reuse$(EXEEXT) t-addsub$(EXEEXT) t-cmp$(EXEEXT) \
+	t-mul$(EXEEXT) t-mul_i$(EXEEXT) t-tdiv$(EXEEXT) \
+	t-tdiv_ui$(EXEEXT) t-fdiv$(EXEEXT) t-fdiv_ui$(EXEEXT) \
+	t-cdiv_ui$(EXEEXT) t-gcd$(EXEEXT) t-gcd_ui$(EXEEXT) \
+	t-lcm$(EXEEXT) t-invert$(EXEEXT) dive$(EXEEXT) \
+	dive_ui$(EXEEXT) t-sqrtrem$(EXEEXT) convert$(EXEEXT) \
+	io$(EXEEXT) t-inp_str$(EXEEXT) logic$(EXEEXT) bit$(EXEEXT) \
+	t-powm$(EXEEXT) t-powm_ui$(EXEEXT) t-pow$(EXEEXT) \
+	t-div_2exp$(EXEEXT) t-root$(EXEEXT) t-perfsqr$(EXEEXT) \
 	t-perfpow$(EXEEXT) t-jac$(EXEEXT) t-bin$(EXEEXT) \
 	t-get_d$(EXEEXT) t-get_d_2exp$(EXEEXT) t-get_si$(EXEEXT) \
 	t-set_d$(EXEEXT) t-set_si$(EXEEXT) t-fac_ui$(EXEEXT) \
@@ -1410,6 +1410,13 @@ recheck: all $(check_PROGRAMS)
 	        am__force_recheck=am--force-recheck \
 	        TEST_LOGS="$$log_list"; \
 	exit $$?
+reuse.log: reuse$(EXEEXT)
+	@p='reuse$(EXEEXT)'; \
+	b='reuse'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
 t-addsub.log: t-addsub$(EXEEXT)
 	@p='t-addsub$(EXEEXT)'; \
 	b='t-addsub'; \
@@ -1581,13 +1588,6 @@ t-pow.log: t-pow$(EXEEXT)
 t-div_2exp.log: t-div_2exp$(EXEEXT)
 	@p='t-div_2exp$(EXEEXT)'; \
 	b='t-div_2exp'; \
-	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
-reuse.log: reuse$(EXEEXT)
-	@p='reuse$(EXEEXT)'; \
-	b='reuse'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
