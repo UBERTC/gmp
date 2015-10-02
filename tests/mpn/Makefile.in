@@ -104,10 +104,10 @@ check_PROGRAMS = t-asmtype$(EXEEXT) t-aors_1$(EXEEXT) \
 	t-toom54$(EXEEXT) t-toom62$(EXEEXT) t-toom63$(EXEEXT) \
 	t-toom6h$(EXEEXT) t-toom8h$(EXEEXT) t-toom2-sqr$(EXEEXT) \
 	t-toom3-sqr$(EXEEXT) t-toom4-sqr$(EXEEXT) t-toom6-sqr$(EXEEXT) \
-	t-toom8-sqr$(EXEEXT) t-mul$(EXEEXT) t-mullo$(EXEEXT) \
-	t-sqrlo$(EXEEXT) t-mulmod_bnm1$(EXEEXT) t-sqrmod_bnm1$(EXEEXT) \
-	t-mulmid$(EXEEXT) t-hgcd$(EXEEXT) t-hgcd_appr$(EXEEXT) \
-	t-matrix22$(EXEEXT) t-invert$(EXEEXT) t-div$(EXEEXT) \
+	t-toom8-sqr$(EXEEXT) t-div$(EXEEXT) t-mul$(EXEEXT) \
+	t-mullo$(EXEEXT) t-sqrlo$(EXEEXT) t-mulmod_bnm1$(EXEEXT) \
+	t-sqrmod_bnm1$(EXEEXT) t-mulmid$(EXEEXT) t-hgcd$(EXEEXT) \
+	t-hgcd_appr$(EXEEXT) t-matrix22$(EXEEXT) t-invert$(EXEEXT) \
 	t-bdiv$(EXEEXT) t-broot$(EXEEXT) t-brootinv$(EXEEXT) \
 	t-minvert$(EXEEXT) t-sizeinbase$(EXEEXT)
 subdir = tests/mpn
@@ -1454,6 +1454,13 @@ t-toom8-sqr.log: t-toom8-sqr$(EXEEXT)
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
+t-div.log: t-div$(EXEEXT)
+	@p='t-div$(EXEEXT)'; \
+	b='t-div'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
 t-mul.log: t-mul$(EXEEXT)
 	@p='t-mul$(EXEEXT)'; \
 	b='t-mul'; \
@@ -1520,13 +1527,6 @@ t-matrix22.log: t-matrix22$(EXEEXT)
 t-invert.log: t-invert$(EXEEXT)
 	@p='t-invert$(EXEEXT)'; \
 	b='t-invert'; \
-	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
-t-div.log: t-div$(EXEEXT)
-	@p='t-div$(EXEEXT)'; \
-	b='t-div'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \

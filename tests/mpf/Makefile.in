@@ -94,9 +94,9 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-check_PROGRAMS = t-add$(EXEEXT) t-sub$(EXEEXT) t-conv$(EXEEXT) \
-	t-sqrt$(EXEEXT) t-sqrt_ui$(EXEEXT) t-muldiv$(EXEEXT) \
-	t-dm2exp$(EXEEXT) reuse$(EXEEXT) t-cmp_d$(EXEEXT) \
+check_PROGRAMS = t-dm2exp$(EXEEXT) t-conv$(EXEEXT) t-add$(EXEEXT) \
+	t-sub$(EXEEXT) t-sqrt$(EXEEXT) t-sqrt_ui$(EXEEXT) \
+	t-muldiv$(EXEEXT) reuse$(EXEEXT) t-cmp_d$(EXEEXT) \
 	t-cmp_si$(EXEEXT) t-div$(EXEEXT) t-fits$(EXEEXT) \
 	t-get_d$(EXEEXT) t-get_d_2exp$(EXEEXT) t-get_si$(EXEEXT) \
 	t-get_ui$(EXEEXT) t-gsprec$(EXEEXT) t-inp_str$(EXEEXT) \
@@ -1055,6 +1055,20 @@ recheck: all $(check_PROGRAMS)
 	        am__force_recheck=am--force-recheck \
 	        TEST_LOGS="$$log_list"; \
 	exit $$?
+t-dm2exp.log: t-dm2exp$(EXEEXT)
+	@p='t-dm2exp$(EXEEXT)'; \
+	b='t-dm2exp'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+t-conv.log: t-conv$(EXEEXT)
+	@p='t-conv$(EXEEXT)'; \
+	b='t-conv'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
 t-add.log: t-add$(EXEEXT)
 	@p='t-add$(EXEEXT)'; \
 	b='t-add'; \
@@ -1065,13 +1079,6 @@ t-add.log: t-add$(EXEEXT)
 t-sub.log: t-sub$(EXEEXT)
 	@p='t-sub$(EXEEXT)'; \
 	b='t-sub'; \
-	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
-t-conv.log: t-conv$(EXEEXT)
-	@p='t-conv$(EXEEXT)'; \
-	b='t-conv'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
@@ -1093,13 +1100,6 @@ t-sqrt_ui.log: t-sqrt_ui$(EXEEXT)
 t-muldiv.log: t-muldiv$(EXEEXT)
 	@p='t-muldiv$(EXEEXT)'; \
 	b='t-muldiv'; \
-	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
-t-dm2exp.log: t-dm2exp$(EXEEXT)
-	@p='t-dm2exp$(EXEEXT)'; \
-	b='t-dm2exp'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
