@@ -1833,8 +1833,11 @@ case $host in
 	;;
     esac
 
-    case $host_cpu in
-      *noavx)
+    case $host in
+      # Disable AVX if the CPU part tells us AVX is unavailable, but also
+      # unconditionally for NetBSD where they don't work but OSXSAVE is set
+      # to claim the contrary.
+      *noavx-*-* | *-*-netbsd*)
 	gcc_cflags_noavx="-mno-avx";;
     esac
 
@@ -2163,7 +2166,8 @@ case $host in
 	fat_path="x86_64 x86_64/fat
 		  x86_64/k8 x86_64/k10 x86_64/bd1 x86_64/bobcat x86_64/pentium4
 		  x86_64/core2 x86_64/coreinhm x86_64/coreisbr x86_64/coreihwl
-		  x86_64/coreibwl x86_64/atom x86_64/silvermont x86_64/nano"
+		  x86_64/coreibwl x86_64/skylake x86_64/atom x86_64/silvermont
+		  x86_64/nano"
 	fat_functions="$fat_functions addmul_2 addlsh1_n addlsh2_n sublsh1_n"
       fi
 

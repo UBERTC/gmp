@@ -9,13 +9,27 @@ Changes between GMP version 6.0.* and 6.1.0
   BUGS FIXED
   * The prototype for mpn_com is now provided by gmp.h for any configuration.
 
+  * Healed possible failures of mpn_sec_sqr for non-cryptographic sizes for
+    some obsolete CPUs.
+
+  * The option --disable-assembly now disables al inlined asm.
+
+  * Fixed bug affecting mini-gmp's bitwise functions mpz_setbit, mpz_clrbit,
+    and mpz_combit.
+
   SPEEDUPS
   * Speedup for Intel Broadwell.
 
-  * Square root is now faster when the remainder is not needed.
+  * Square root is now faster when the remainder is not needed. Also the speed
+    to compute the k-th root improved, for small sizes.
 
   FEATURES
   * New C++ functions gcd and lcm for mpz_class.
+
+  * New public mpn functions mpn_divexact_1, mpn_zero_p, and mpn_cnd_swap.
+
+  * New public mpq_cmp_z function, to efficiently compare rationals with
+    integers.
 
   * Support for Darwin in all x86 code, thereby enabling fat builds on Darwin.
 
@@ -37,6 +51,10 @@ Changes between GMP version 6.0.* and 6.1.0
   MISC
   * We now use manufacturers' code names for x86 CPUs, e.g., "haswell" instead
     of names derived from the commercial brands.
+
+  * Small improvements and better coverage for the test suite.
+
+  * Minor portability enhancements.
 
   * The various FreeBSD problems listed for 6.0.0 affect this release too.
 
