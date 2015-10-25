@@ -1,6 +1,6 @@
 dnl  X86-32 and X86-64 mpn_popcount using SSE2.
 
-dnl  Copyright 2006, 2007, 2011 Free Software Foundation, Inc.
+dnl  Copyright 2006, 2007, 2011, 2015 Free Software Foundation, Inc.
 
 dnl  This file is part of the GNU MP Library.
 dnl
@@ -99,6 +99,10 @@ define(`LIMBS_PER_2XMM', eval(32/GMP_LIMB_BYTES))
 
 undefine(`psadbw')			C override inherited m4 version
 
+C This file is shared between 32-bit and 64-bit builds.  Only the former has
+C LEAL.  Default LEAL as an alias of LEA.
+ifdef(`LEAL',,`define(`LEAL', `LEA($1,$2)')')
+
 ASM_START()
 
 C Make cnsts global to work around Apple relocation bug.
@@ -117,7 +121,7 @@ LIMB32(`push	%ebx		')
 	pxor	%xmm3, %xmm3		C zero grand total count
 LIMB64(`pxor	zero, zero	')
 ifdef(`PIC',`
-	LEA(	cnsts, breg)
+	LEAL(	cnsts, breg)
 ',`
 LIMB32(`mov	$cnsts, breg	')
 LIMB64(`movabs	$cnsts, breg	')
