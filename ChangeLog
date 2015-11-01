@@ -1,8 +1,41 @@
+2015-10-30  Torbjörn Granlund  <torbjorng@google.com>
+
+	* mpf/pow_ui.c: Add log(e) precision bits.
+
+2015-10-29 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* demos/factorize.c: mpz_div_2exp => mpz_tdiv_q_2exp.
+	* demos/perl/GMP.xs: Likewise.
+	* tests/mpf/t-pow_ui.c: Use reference value to check the size.
+
+	* mini-gmp/mini-gmp.c: Removed a typo (spotted by Paul Zimmermann).
+	* doc/gmp.texi (Floating-point): Remove "infinite precision" claim.
+
+	* gmp-h.in: Update version.
+
+2015-10-28  Torbjörn Granlund  <torbjorng@google.com>
+
+	* tests/mpf/t-pow_ui.c: New file.
+	* tests/mpf/Makefile.am (check_PROGRAMS): Compile it.
+
+	* mpf/pow_ui.c: Rewrite for accuracy and performance.
+
+2015-10-26 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* configfsf.guess: Updated to version 2015-10-21, for a typo.
+
+	* tests/cxx/t-ops.cc (check_mpq): Compare also with mpz.
+	(check_mpf): Compare also with mpz and mpq.
+
+2015-10-25  Torbjörn Granlund  <torbjorng@google.com>
+
+	* configure.ac: Avoid passing ambiguous -march=skylake.
+
 2015-10-21 Marco Bodrato <bodrato@mail.dm.unipi.it>
 
 	* Version 6.1.0-rc1 published.
 
-	* gmp-h.in: Revert versioni for RC.
+	* gmp-h.in: Revert version for RC.
 
 2015-10-20  Torbjörn Granlund  <torbjorng@google.com>
 
