@@ -1,9 +1,138 @@
+2015-10-30  Torbjörn Granlund  <torbjorng@google.com>
+
+	* mpf/pow_ui.c: Add log(e) precision bits.
+
+2015-10-29 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* demos/factorize.c: mpz_div_2exp => mpz_tdiv_q_2exp.
+	* demos/perl/GMP.xs: Likewise.
+	* tests/mpf/t-pow_ui.c: Use reference value to check the size.
+
+	* mini-gmp/mini-gmp.c: Removed a typo (spotted by Paul Zimmermann).
+	* doc/gmp.texi (Floating-point): Remove "infinite precision" claim.
+
+	* gmp-h.in: Update version.
+
+2015-10-28  Torbjörn Granlund  <torbjorng@google.com>
+
+	* tests/mpf/t-pow_ui.c: New file.
+	* tests/mpf/Makefile.am (check_PROGRAMS): Compile it.
+
+	* mpf/pow_ui.c: Rewrite for accuracy and performance.
+
+2015-10-26 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* configfsf.guess: Updated to version 2015-10-21, for a typo.
+
+	* tests/cxx/t-ops.cc (check_mpq): Compare also with mpz.
+	(check_mpf): Compare also with mpz and mpq.
+
+2015-10-25  Torbjörn Granlund  <torbjorng@google.com>
+
+	* configure.ac: Avoid passing ambiguous -march=skylake.
+
+2015-10-21 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* Version 6.1.0-rc1 published.
+
+	* gmp-h.in: Revert version for RC.
+
+2015-10-20  Torbjörn Granlund  <torbjorng@google.com>
+
+	* mpn/x86/pentium4/sse2/popcount.asm: Use LEAL.
+	* mpn/x86/k7/invert_limb.asm: Likewise.
+
+2015-10-18  Torbjörn Granlund  <torbjorng@google.com>
+
+	* mpn/arm64/gmp-mparam.h: New file.
+
+2015-10-18 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* Makefile.am (LIBGMP_LT_*, LIBGMPXX_LT_*): Bump version info.
+	* gmp-h.in: Bump version.
+
+2015-10-17 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* tests/mpf/t-cmp_si.c: Initialise a variable (only when error arise)
+	* mpn/generic/toom43_mul.c: Insert parentheses around & expressions.
+	* mpn/generic/toom52_mul.c: Likewise.
+	* tests/mpn/t-minvert.c: Remove an unused var.
+	* tests/mpz/t-cong_2exp.c: Likewise.
+
+2015-10-16  Hans Wennborg <hwennborg at google.com>
+
+	* mpn/generic/div_qr_2.c: Insert parentheses around & expressions.
+	* mpn/generic/toom44_mul.c: Likewise.
+	* mpn/generic/toom53_mul.c: Likewise.
+	* mpn/generic/toom62_mul.c: Likewise.
+	* tests/mpn/t-bdiv.c: Simplify conditional printing of whitespace.
+	* tests/mpn/t-div.c: Likewise.
+
+2015-10-15 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* configfsf.sub: Updated to version 2015-08-20, from gnulib.
+	* configfsf.guess: Updated to version 2015-09-14, from gnulib.
+
+2015-10-14  Torbjörn Granlund  <torbjorng@google.com>
+
+	* demos/pexpr.c (main): Clear out a variable.
+
+	* mpn/generic/sqrlo_basecase.c: Move things before addmul_1 to reduce
+	register pressure.
+
+	* .hgignore: Add 'compile' and 'test-driver'.
+
+	* mpn/generic/mu_bdiv_qr.c (mpn_mu_bdiv_qr_itch): Simplify, add ASSERT.
+	* mpn/generic/mu_bdiv_q.c (mpn_mu_bdiv_q_itch): Likewise.
+
+	* tune/tuneup.c (tune_mu_bdiv): Start at measured BDIV_DC_ thresholds.
+
+2015-10-13 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* mpf/clears.c, mpf/inits.c, mpq/clears.c, mpq/inits.c,
+	* mpz/clears.c, mpz/inits.c: Keep on supporting empty list.
+
+2015-10-13  Marc Glisse  <marc.glisse@inria.fr>
+
+	* gmpxx.h (__GMPP_DEFINE_BINARY_TYPE_FUNCTION): Allow mixed operations.
+	(__gmp_cmp_function, __gmp_binary_equal, __gmp_binary_less):
+	Handle mixed operations.
+	(__gmp_cmp_function): Move before __gmp_binary_equal.
+
+2015-10-13 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* mpf/pow_ui.c: Increased precision of partial results.
+
+2015-10-12  Torbjörn Granlund  <torbjorng@google.com>
+
+	* configure.ac: Reject AVX for NetBSD.
+
+2015-10-11  Torbjörn Granlund  <torbjorng@google.com>
+
+	* configure.ac (fat_path): Add skylake.
+
+2015-10-10 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* gen-fib.c: Correct the name of the program in error message.
+	* gen-fac.c: Likewise.
+
+	* mpf/get_str.c: Increase precision of base^e computation.
+
+2015-10-09  Torbjörn Granlund  <torbjorng@google.com>
+
+	* config.guess: Recognise cabylake and goldmont and more versions of
+	skylake and silvermont.
+	* acinclude.m4 (X86_64_PATTERN): Add cabylake and goldmont.
+	* config.sub: Corresponding changes.
+	* configure.ac: Corresponding changes.
+	* mpn/x86_64/fat/fat.c: Corresponding changes.
+
 2015-09-12  Torbjörn Granlund  <torbjorng@google.com>
 
 	* mpf/clear.c, mpf/clears.c, mpf/inits.c, mpq/clear.c, mpq/clears.c
 	* mpq/inits.c, mpz/clear.c, mpz/clears.c, mpz/inits.c:
 	Streamline, use macros.
-	
+
 2015-09-27 Marco Bodrato <bodrato@mail.dm.unipi.it>
 
 	* mpz/cfdiv_r_2exp.c: Use mpn_neg and MPZ_NEWALLOC.
@@ -709,20 +838,20 @@
 
 	* mpn/x86_64/x86_64-defs.m4: Fix quoting.
 
-	mpn/x86_64/atom/redc_1.asm: Enforce proper stack allocation.
-	mpn/x86_64/bobcat/redc_1.asm: Likewise.
-	mpn/x86_64/core2/divrem_1.asm: Likewise.
-	mpn/x86_64/core2/gcd_1.asm: Likewise.
-	mpn/x86_64/core2/redc_1.asm: Likewise.
-	mpn/x86_64/coreihwl/redc_1.asm: Likewise.
-	mpn/x86_64/coreinhm/redc_1.asm: Likewise.
-	mpn/x86_64/coreisbr/redc_1.asm: Likewise.
-	mpn/x86_64/divrem_1.asm: Likewise.
-	mpn/x86_64/divrem_2.asm: Likewise.
-	mpn/x86_64/gcd_1.asm: Likewise.
-	mpn/x86_64/mod_1_1.asm: Likewise.
-	mpn/x86_64/mod_1_2.asm: Likewise.
-	mpn/x86_64/mod_1_4.asm: Likewise.
+	* mpn/x86_64/atom/redc_1.asm: Enforce proper stack allocation.
+	* mpn/x86_64/bobcat/redc_1.asm: Likewise.
+	* mpn/x86_64/core2/divrem_1.asm: Likewise.
+	* mpn/x86_64/core2/gcd_1.asm: Likewise.
+	* mpn/x86_64/core2/redc_1.asm: Likewise.
+	* mpn/x86_64/coreihwl/redc_1.asm: Likewise.
+	* mpn/x86_64/coreinhm/redc_1.asm: Likewise.
+	* mpn/x86_64/coreisbr/redc_1.asm: Likewise.
+	* mpn/x86_64/divrem_1.asm: Likewise.
+	* mpn/x86_64/divrem_2.asm: Likewise.
+	* mpn/x86_64/gcd_1.asm: Likewise.
+	* mpn/x86_64/mod_1_1.asm: Likewise.
+	* mpn/x86_64/mod_1_2.asm: Likewise.
+	* mpn/x86_64/mod_1_4.asm: Likewise.
 
 2014-06-30  Torbjörn Granlund  <tege@gmplib.org>
 

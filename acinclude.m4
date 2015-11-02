@@ -1,7 +1,7 @@
 dnl  GMP specific autoconf macros
 
 
-dnl  Copyright 2000-2006, 2009, 2011, 2013, 2014 Free Software Foundation, Inc.
+dnl  Copyright 2000-2006, 2009, 2011, 2013-2015 Free Software Foundation, Inc.
 dnl
 dnl  This file is part of the GNU MP Library.
 dnl
@@ -63,7 +63,7 @@ define(X86_PATTERN,
 [[i?86*-*-* | k[5-8]*-*-* | pentium*-*-* | athlon-*-* | viac3*-*-* | geode*-*-* | atom-*-*]])
 
 define(X86_64_PATTERN,
-[[athlon64-*-* | k8-*-* | k10-*-* | bobcat-*-* | jaguar*-*-* | bulldozer*-*-* | piledriver*-*-* | steamroller*-*-* | excavator*-*-* | pentium4-*-* | atom-*-* | silvermont-*-* | core2-*-* | corei*-*-* | x86_64-*-* | nano-*-* | nehalem*-*-* | westmere*-*-* | sandybridge*-*-* | ivybridge*-*-* | haswell*-*-* | broadwell*-*-* | skylake*-*-*]])
+[[athlon64-*-* | k8-*-* | k10-*-* | bobcat-*-* | jaguar*-*-* | bulldozer*-*-* | piledriver*-*-* | steamroller*-*-* | excavator*-*-* | pentium4-*-* | atom-*-* | silvermont-*-* | goldmont-*-* | core2-*-* | corei*-*-* | x86_64-*-* | nano-*-* | nehalem*-*-* | westmere*-*-* | sandybridge*-*-* | ivybridge*-*-* | haswell*-*-* | broadwell*-*-* | skylake*-*-* | cabylake*-*-*]])
 
 dnl  GMP_FAT_SUFFIX(DSTVAR, DIRECTORY)
 dnl  ---------------------------------
@@ -1663,8 +1663,11 @@ rm -f conftest*
 
 
 dnl Checks whether the stack can be marked nonexecutable by passing an option
-dnl to the C-compiler when acting on .s files. Appends that option to ASFLAGS.
+dnl to the C-compiler when acting on .s files. Appends that option to ASMFLAGS.
 dnl This macro is adapted from one found in GLIBC-2.3.5.
+dnl FIXME: This test looks broken. It tests that a file with .note.GNU-stack...
+dnl can be compiled/assembled with -Wa,--noexecstack.  It does not determine
+dnl if that command-line option has any effect on general asm code.
 AC_DEFUN([CL_AS_NOEXECSTACK],[
 dnl AC_REQUIRE([AC_PROG_CC]) GMP uses something else
 AC_CACHE_CHECK([whether assembler supports --noexecstack option],
