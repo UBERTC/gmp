@@ -1,3 +1,32 @@
+2015-11-21 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* gmp-impl.h (MPN_TOOM22_MUL_MINSIZE): Consider ToomX2 limits
+	  (thanks Paul).
+	* tests/mpn/t-toom22.c: Keep on testing small sizes.
+
+2015-11-13 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* mini-gmp/mini-gmp.c: Lazy allocation for mpz_t.
+	(mpz_rootrem): Exploit lazy allocation to avoid init2.
+	* mpz/set.c: Use MPZ_NEWALLOC.
+
+	* mpq/init.c: Remove conditional code for __CHECKER__.
+	* mpq/set.c: Shorten scope of local variables.
+	* mpq/set_den.c: Likewise.
+	* mpq/set_num.c: Likewise.
+	* mpq/set_z.c: Likewise.
+
+	* primesieve.c: Fill sieve with a presieved 70bits pattern.
+
+2015-11-12  Marc Glisse  <marc.glisse@inria.fr>
+
+	* gmpxx.h (__gmp_fibonacci_function): New class.
+	(fibonacci, mpz_class::fibonacci): New functions.
+	(__gmp_fac_function, __gmp_primorial_function): Add braces.
+	* tests/cxx/t-ops2z.cc: Test fibonacci.
+	* doc/gmp.texi (C++ Interface Integers): Document fibonacci.
+	Warn about factorial and primorial of negative numbers.
+
 2015-11-10  Marc Glisse  <marc.glisse@inria.fr>
 
 	* gmpxx.h (__gmp_primorial_function): Throw on negative operands.
