@@ -4231,7 +4231,7 @@ numbers.  These functions start with the prefix @code{mpq_}.
 Rational numbers are stored in objects of type @code{mpq_t}.
 
 All rational arithmetic functions assume operands have a canonical form, and
-canonicalize their result.  The canonical from means that the denominator and
+canonicalize their result.  The canonical form means that the denominator and
 the numerator have no common factors, and that the denominator is positive.
 Zero has the unique representation 0/1.
 
@@ -6863,11 +6863,18 @@ mpz_fdiv_q (q.get_mpz_t(), a.get_mpz_t(), d.get_mpz_t());
 @maybepagebreak
 @deftypefunx mpz_class gcd (mpz_class @var{op1}, mpz_class @var{op2})
 @deftypefunx mpz_class lcm (mpz_class @var{op1}, mpz_class @var{op2})
+@deftypefunx mpz_class mpz_class::factorial (type @var{op})
+@deftypefunx mpz_class factorial (mpz_class @var{op})
+@deftypefunx mpz_class mpz_class::primorial (type @var{op})
+@deftypefunx mpz_class primorial (mpz_class @var{op})
+@deftypefunx mpz_class mpz_class::fibonacci (type @var{op})
+@deftypefunx mpz_class fibonacci (mpz_class @var{op})
 @maybepagebreak
 @deftypefunx void mpz_class::swap (mpz_class& @var{op})
 @deftypefunx void swap (mpz_class& @var{op1}, mpz_class& @var{op2})
 These functions provide a C++ class interface to the corresponding GMP C
-routines.
+routines.  Calling @code{factorial} or @code{primorial} on a negative number
+is undefined.
 
 @code{cmp} can be used with any of the classes or the standard C++ types,
 except @code{long long} and @code{long double}.

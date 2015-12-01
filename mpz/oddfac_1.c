@@ -7,7 +7,7 @@ IT IS ONLY SAFE TO REACH IT THROUGH DOCUMENTED INTERFACES.
 IN FACT, IT IS ALMOST GUARANTEED THAT IT WILL CHANGE OR
 DISAPPEAR IN A FUTURE GNU MP RELEASE.
 
-Copyright 2010-2012 Free Software Foundation, Inc.
+Copyright 2010-2012, 2015 Free Software Foundation, Inc.
 
 This file is part of the GNU MP Library.
 
@@ -86,7 +86,7 @@ see https://www.gnu.org/licenses/.  */
 	}							\
       __mask = __mask << 1 | __mask >> (GMP_LIMB_BITS-1);	\
       __index += __mask & 1;					\
-    }  while (__i <= __max_i)					\
+    }  while (__i <= __max_i)
 
 #define LOOP_ON_SIEVE_END					\
     LOOP_ON_SIEVE_STOP;						\
@@ -245,6 +245,7 @@ mpz_2multiswing_1 (mpz_ptr x, mp_limb_t n, mp_ptr sieve, mp_ptr factors)
     }
   else
     {
+      ASSERT (ALLOC (x) > 0);
       PTR (x)[0] = prod;
       SIZ (x) = 1;
     }
@@ -290,7 +291,7 @@ mpz_oddfac_1 (mpz_ptr x, mp_limb_t n, unsigned flag)
 
   if (n <= ODD_FACTORIAL_TABLE_LIMIT)
     {
-      PTR (x)[0] = __gmp_oddfac_table[n];
+      MPZ_NEWALLOC (x, 1)[0] = __gmp_oddfac_table[n];
       SIZ (x) = 1;
     }
   else if (n <= ODD_DOUBLEFACTORIAL_TABLE_LIMIT + 1)

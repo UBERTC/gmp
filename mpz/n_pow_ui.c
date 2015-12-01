@@ -4,7 +4,7 @@
    CERTAIN TO BE SUBJECT TO INCOMPATIBLE CHANGES OR DISAPPEAR COMPLETELY IN
    FUTURE GNU MP RELEASES.
 
-Copyright 2001, 2002, 2005, 2012 Free Software Foundation, Inc.
+Copyright 2001, 2002, 2005, 2012, 2015 Free Software Foundation, Inc.
 
 This file is part of the GNU MP Library.
 
@@ -183,7 +183,7 @@ mpz_n_pow_ui (mpz_ptr r, mp_srcptr bp, mp_size_t bsize, unsigned long int e)
   /* b^0 == 1, including 0^0 == 1 */
   if (e == 0)
     {
-      PTR(r)[0] = 1;
+      MPZ_NEWALLOC (r, 1)[0] = 1;
       SIZ(r) = 1;
       return;
     }

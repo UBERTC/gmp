@@ -1,6 +1,140 @@
+2015-11-21 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* gmp-impl.h (MPN_TOOM22_MUL_MINSIZE): Consider ToomX2 limits
+	  (thanks Paul).
+	* tests/mpn/t-toom22.c: Keep on testing small sizes.
+	* tests/mpz/t-primorial_ui.c: Test a single "large" number.
+
+	* tune/common.c (speed_mpz_primorial_ui): New functions.
+	* tune/speed.h: Declare it.
+	* tune/speed.c (routine): Add mpz_primorial_ui.
+
+	* primesieve.c: Use two presieved patterns on 64-bits CPUs.
+
+2015-11-13 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* mini-gmp/mini-gmp.c: Lazy allocation for mpz_t.
+	(mpz_rootrem): Exploit lazy allocation to avoid init2.
+	* mpz/set.c: Use MPZ_NEWALLOC.
+
+	* mpq/init.c: Remove conditional code for __CHECKER__.
+	* mpq/set.c: Shorten scope of local variables.
+	* mpq/set_den.c: Likewise.
+	* mpq/set_num.c: Likewise.
+	* mpq/set_z.c: Likewise.
+
+	* primesieve.c: Fill sieve with a presieved 70bits pattern.
+
+2015-11-12  Marc Glisse  <marc.glisse@inria.fr>
+
+	* gmpxx.h (__gmp_fibonacci_function): New class.
+	(fibonacci, mpz_class::fibonacci): New functions.
+	(__gmp_fac_function, __gmp_primorial_function): Add braces.
+	* tests/cxx/t-ops2z.cc: Test fibonacci.
+	* doc/gmp.texi (C++ Interface Integers): Document fibonacci.
+	Warn about factorial and primorial of negative numbers.
+
+2015-11-10  Marc Glisse  <marc.glisse@inria.fr>
+
+	* gmpxx.h (__gmp_primorial_function): Throw on negative operands.
+	* tests/cxx/t-ops2z.cc: Test it.
+
+2015-11-09 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* mpz: Experimental, lazy allocation.
+
+2015-11-09  Marc Glisse  <marc.glisse@inria.fr>
+
+	* tests/cxx/Makefile.am: Move EXTRA_DIST out of WANT_CXX.
+
+2015-11-08 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* mpz/urandomm.c: Use mpn_zero_p to shorten code.
+
+2015-11-08  Marc Glisse  <marc.glisse@inria.fr>
+
+	* gmpxx.h (__gmp_fac_function, __gmp_primorial_function): New classes.
+	(__GMPP_DECLARE_UNARY_STATIC_MEMFUN,
+	__GMPNN_DECLARE_UNARY_STATIC_MEMFUN,
+	__GMPNS_DECLARE_UNARY_STATIC_MEMFUN,
+	__GMPNU_DECLARE_UNARY_STATIC_MEMFUN,
+	__GMPND_DECLARE_UNARY_STATIC_MEMFUN,
+	__GMPN_DECLARE_UNARY_STATIC_MEMFUN,
+	__GMP_DECLARE_UNARY_STATIC_MEMFUN, __GMPP_DEFINE_UNARY_STATIC_MEMFUN,
+	__GMPNN_DEFINE_UNARY_STATIC_MEMFUN,
+	__GMPNS_DEFINE_UNARY_STATIC_MEMFUN,
+	__GMPNU_DEFINE_UNARY_STATIC_MEMFUN,
+	__GMPND_DEFINE_UNARY_STATIC_MEMFUN, __GMPN_DEFINE_UNARY_STATIC_MEMFUN,
+	__GMP_DEFINE_UNARY_STATIC_MEMFUN): New macros.
+	(factorial, mpz_class::factorial, primorial, mpz_class::primorial):
+	New functions.
+	* tests/cxx/t-ops2.cc: Test factorial and primorial.
+	* tests/cxx/Makefile.am: Move t-ops2 after
+	t-do-exceptions-work-at-all-with-this-compiler.
+	* doc/gmp.texi: Document factorial and primorial.
+	* NEWS: Likewise.
+
+	* tests/cxx/t-ops2.cc: Remove and split into ...
+	* tests/cxx/t-ops2z.cc, tests/cxx/t-ops2qf.cc, tests/cxx/t-ops2f.cc,
+	tests/cxx/t-ops2.h: New files.
+	* tests/cxx/Makefile.am: Update for the split.
+
+2015-11-07  Marc Glisse  <marc.glisse@inria.fr>
+
+	* gmpxx.h (__GMP_DEFINE_UNARY_FUNCTION_1,
+	__GMPP_DEFINE_BINARY_FUNCTION_1, __GMPNN_DEFINE_BINARY_FUNCTION_1,
+	__GMPNS_DEFINE_BINARY_FUNCTION_1, __GMPNU_DEFINE_BINARY_FUNCTION_1,
+	__GMPND_DEFINE_BINARY_FUNCTION_1, __GMPNLD_DEFINE_BINARY_FUNCTION_1,
+	__GMPN_DEFINE_BINARY_FUNCTION_1, __GMP_DEFINE_BINARY_FUNCTION_1):
+	New macros.
+	(operator~, trunc, floor, ceil, sqrt, operator%, operator&, operator|,
+	operator^, hypot, gcd, lcm): Use them.
+
+2015-11-06 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* mpz/and.c: Use MPZ_NEWALLOC.
+	* mpz/ior.c: Remove duplicated branches, add branch hints.
+	* mpz/xor.c: Likewise, and use NORMALIZE_NOT_ZERO.
+
+	* mpz/init.c: Remove conditional code for __CHECKER__.
+	* mpz/init2.c: Likewise.
+	* mpz/inits.c: Likewise.
+	* mpz/iset.c: Likewise.
+	* mpz/iset_str.c: Likewise.
+
+	* mini-gmp/mini-gmp.c (mpn_com, mpn_neg): New functions.
+	* mini-gmp/mini-gmp.h: Declare them.
+	* mini-gmp/mini-gmp.c (mpz_div_r_2exp): Use mpn_neg.
+
+2015-11-04  Torbjörn Granlund  <torbjorng@google.com>
+
+	* mpz/xor.c: Use MPZ_REALLOC.
+	* mpz/ior.c: Likewise
+
+2015-11-03 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* mpz/xor.c: Use the return value of _mpz_realloc.
+	* mpz/ior.c: Likewise.
+	* mpn/generic/sec_div.c: Remove unused var.
+
+2015-11-01  Torbjörn Granlund  <torbjorng@google.com>
+
+	* tests/misc.c (seed_from_tod, seed_from_urandom): New functions.
+	(tests_rand_start): Use them.
+
+2015-11-01 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* Version 6.1.0 released.
+
+	* mpz/inits.c [__CHECKER__]: Init limb, not pointer.
+	* mpz/init.c [__CHECKER__]: Likewise (spotted by Vicente Benjumea).
+	* tests/mpf/t-pow_ui.c: Use another mpf for the size limit.
+
 2015-10-30  Torbjörn Granlund  <torbjorng@google.com>
 
 	* mpf/pow_ui.c: Add log(e) precision bits.
+
+	* doc/gmp.texi (Floating-point): Rewrite mpf introduction.
 
 2015-10-29 Marco Bodrato <bodrato@mail.dm.unipi.it>
 

@@ -70,7 +70,7 @@ see https://www.gnu.org/licenses/.  */
 #define GMP_MAX(a, b) ((a) > (b) ? (a) : (b))
 
 #define gmp_assert_nocarry(x) do { \
-    mp_limb_t __cy = x;		   \
+    mp_limb_t __cy = (x);	   \
     assert (__cy == 0);		   \
   } while (0)
 
@@ -699,6 +699,28 @@ mpn_scan0 (mp_srcptr ptr, mp_bitcnt_t bit)
 
   return mpn_common_scan (~ptr[i] & (GMP_LIMB_MAX << (bit % GMP_LIMB_BITS)),
 			  i, ptr, i, GMP_LIMB_MAX);
+}
+
+void
+mpn_com (mp_ptr rp, mp_srcptr up, mp_size_t n)
+{
+  while (--n >= 0)
+    *rp++ = ~ *up++;
+}
+
+mp_limb_t
+mpn_neg (mp_ptr rp, mp_srcptr up, mp_size_t n)
+{
+  while (*up == 0)
+    {
+      *rp = 0;
+      if (!--n)
+	return 0;
+      ++up; ++rp;
+    }
+  *rp = - *up;
+  mpn_com (++rp, ++up, --n);
+  return 1;
 }
 
 
@@ -1361,9 +1383,11 @@ mpn_set_str (mp_ptr rp, const unsigned char *sp, size_t sn, int base)
 void
 mpz_init (mpz_t r)
 {
-  r->_mp_alloc = 1;
+  static const mp_limb_t dummy_limb = 0xc1a0;
+
+  r->_mp_alloc = 0;
   r->_mp_size = 0;
-  r->_mp_d = gmp_xalloc_limbs (1);
+  r->_mp_d = (mp_ptr) &dummy_limb;
 }
 
 /* The utility of this function is a bit limited, since many functions
@@ -1384,7 +1408,8 @@ mpz_init2 (mpz_t r, mp_bitcnt_t bits)
 void
 mpz_clear (mpz_t r)
 {
-  gmp_free (r->_mp_d);
+  if (r->_mp_alloc)
+    gmp_free (r->_mp_d);
 }
 
 static mp_ptr
@@ -1392,7 +1417,10 @@ mpz_realloc (mpz_t r, mp_size_t size)
 {
   size = GMP_MAX (size, 1);
 
-  r->_mp_d = gmp_xrealloc_limbs (r->_mp_d, size);
+  if (r->_mp_alloc)
+    r->_mp_d = gmp_xrealloc_limbs (r->_mp_d, size);
+  else
+    r->_mp_d = gmp_xalloc_limbs (size);  
   r->_mp_alloc = size;
 
   if (GMP_ABS (r->_mp_size) > size)
@@ -1415,7 +1443,7 @@ mpz_set_si (mpz_t r, signed long int x)
   else /* (x < 0) */
     {
       r->_mp_size = -1;
-      r->_mp_d[0] = GMP_NEG_CAST (unsigned long int, x);
+      MPZ_REALLOC (r, 1)[0] = GMP_NEG_CAST (unsigned long int, x);
     }
 }
 
@@ -1425,7 +1453,7 @@ mpz_set_ui (mpz_t r, unsigned long int x)
   if (x > 0)
     {
       r->_mp_size = 1;
-      r->_mp_d[0] = x;
+      MPZ_REALLOC (r, 1)[0] = x;
     }
   else
     r->_mp_size = 0;
@@ -1826,7 +1854,7 @@ mpz_abs_add_ui (mpz_t r, const mpz_t a, unsigned long b)
   an = GMP_ABS (a->_mp_size);
   if (an == 0)
     {
-      r->_mp_d[0] = b;
+      MPZ_REALLOC (r, 1)[0] = b;
       return b > 0;
     }
 
@@ -1845,14 +1873,15 @@ static mp_size_t
 mpz_abs_sub_ui (mpz_t r, const mpz_t a, unsigned long b)
 {
   mp_size_t an = GMP_ABS (a->_mp_size);
-  mp_ptr rp = MPZ_REALLOC (r, an);
+  mp_ptr rp;
 
   if (an == 0)
     {
-      rp[0] = b;
+      MPZ_REALLOC (r, 1)[0] = b;
       return -(b > 0);
     }
-  else if (an == 1 && a->_mp_d[0] < b)
+  rp = MPZ_REALLOC (r, an);
+  if (an == 1 && a->_mp_d[0] < b)
     {
       rp[0] = b - a->_mp_d[0];
       return -1;
@@ -2323,7 +2352,6 @@ mpz_div_q_2exp (mpz_t q, const mpz_t u, mp_bitcnt_t bit_index,
 
   if (qn <= 0)
     qn = 0;
-
   else
     {
       qp = MPZ_REALLOC (q, qn);
@@ -2377,16 +2405,9 @@ mpz_div_r_2exp (mpz_t r, const mpz_t u, mp_bitcnt_t bit_index,
 	{
 	  /* Have to negate and sign extend. */
 	  mp_size_t i;
-	  mp_limb_t cy;
 
-	  for (cy = 1, i = 0; i < un; i++)
-	    {
-	      mp_limb_t s = ~u->_mp_d[i] + cy;
-	      cy = s < cy;
-	      rp[i] = s;
-	    }
-	  assert (cy == 0);
-	  for (; i < rn - 1; i++)
+	  gmp_assert_nocarry (! mpn_neg (rp, u->_mp_d, un));
+	  for (i = un; i < rn - 1; i++)
 	    rp[i] = GMP_LIMB_MAX;
 
 	  rp[rn-1] = mask;
@@ -2411,23 +2432,13 @@ mpz_div_r_2exp (mpz_t r, const mpz_t u, mp_bitcnt_t bit_index,
       if (mode == ((us > 0) ? GMP_DIV_CEIL : GMP_DIV_FLOOR)) /* us != 0 here. */
 	{
 	  /* If r != 0, compute 2^{bit_count} - r. */
-	  mp_size_t i;
+	  mpn_neg (rp, rp, rn);
 
-	  for (i = 0; i < rn && rp[i] == 0; i++)
-	    ;
-	  if (i < rn)
-	    {
-	      /* r > 0, need to flip sign. */
-	      rp[i] = ~rp[i] + 1;
-	      while (++i < rn)
-		rp[i] = ~rp[i];
-
-	      rp[rn-1] &= mask;
-
-	      /* us is not used for anything else, so we can modify it
-		 here to indicate flipped sign. */
-	      us = -us;
-	    }
+	  rp[rn-1] &= mask;
+	      
+	  /* us is not used for anything else, so we can modify it
+	     here to indicate flipped sign. */
+	  us = -us;
 	}
     }
   rn = mpn_normalized_size (rp, rn);
@@ -2542,7 +2553,7 @@ mpz_div_qr_ui (mpz_t q, mpz_t r,
 
   if (r)
     {
-      r->_mp_d[0] = rl;
+      MPZ_REALLOC (r, 1)[0] = rl;
       r->_mp_size = rs;
     }
   if (q)
@@ -3203,12 +3214,8 @@ mpz_rootrem (mpz_t x, mpz_t r, const mpz_t y, unsigned long z)
   }
 
   mpz_init (u);
-  {
-    mp_bitcnt_t tb;
-    tb = mpz_sizeinbase (y, 2) / z + 1;
-    mpz_init2 (t, tb + 1);
-    mpz_setbit (t, tb);
-  }
+  mpz_init (t);
+  mpz_setbit (t, mpz_sizeinbase (y, 2) / z + 1);
 
   if (z == 2) /* simplify sqrt loop: z-1 == 1 */
     do {

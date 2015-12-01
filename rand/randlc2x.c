@@ -1,6 +1,6 @@
 /* Linear Congruential pseudo-random number generator functions.
 
-Copyright 1999-2003, 2005 Free Software Foundation, Inc.
+Copyright 1999-2003, 2005, 2015 Free Software Foundation, Inc.
 
 This file is part of the GNU MP Library.
 
@@ -319,7 +319,7 @@ gmp_randinit_lc_2exp (gmp_randstate_t rstate,
   if (SIZ (p->_mp_a) == 0)
     {
       SIZ (p->_mp_a) = 1;
-      PTR (p->_mp_a)[0] = CNST_LIMB (0);
+      MPZ_NEWALLOC (p->_mp_a, 1)[0] = CNST_LIMB (0);
     }
 
   MPN_SET_UI (p->_cp, p->_cn, c);

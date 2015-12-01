@@ -2,7 +2,7 @@
 
 Contributed to the GNU project by Marco Bodrato.
 
-Copyright 2012 Free Software Foundation, Inc.
+Copyright 2012, 2015 Free Software Foundation, Inc.
 
 This file is part of the GNU MP Library.
 
@@ -73,7 +73,7 @@ see https://www.gnu.org/licenses/.  */
 	}							\
       __mask = __mask << 1 | __mask >> (GMP_LIMB_BITS-1);	\
       __index += __mask & 1;					\
-    }  while (__i <= __max_i)					\
+    }  while (__i <= __max_i)
 
 #define LOOP_ON_SIEVE_END					\
     LOOP_ON_SIEVE_STOP;						\
@@ -114,7 +114,7 @@ mpz_primorial_ui (mpz_ptr x, unsigned long n)
 
   if (n < numberof (table))
     {
-      PTR (x)[0] = table[n];
+      MPZ_NEWALLOC (x, 1)[0] = table[n];
       SIZ (x) = 1;
     }
   else
@@ -155,7 +155,7 @@ mpz_primorial_ui (mpz_ptr x, unsigned long n)
 	}
       else
 	{
-	  PTR (x)[0] = prod;
+	  MPZ_NEWALLOC (x, 1)[0] = prod;
 	  SIZ (x) = 1;
 	}
 

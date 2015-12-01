@@ -1,7 +1,7 @@
 /* mpz_xor -- Logical xor.
 
-Copyright 1991, 1993, 1994, 1996, 1997, 2000, 2001, 2005, 2012 Free Software
-Foundation, Inc.
+Copyright 1991, 1993, 1994, 1996, 1997, 2000, 2001, 2005, 2012, 2015
+Free Software Foundation, Inc.
 
 This file is part of the GNU MP Library.
 
@@ -55,12 +55,11 @@ mpz_xor (mpz_ptr res, mpz_srcptr op1, mpz_srcptr op2)
 	{
 	  if (op1_size >= op2_size)
 	    {
-	      if (ALLOC(res) < op1_size)
+	      if (UNLIKELY (ALLOC(res) < op1_size))
 		{
-		  _mpz_realloc (res, op1_size);
+		  res_ptr = (mp_ptr) _mpz_realloc (res, op1_size);
 		  /* No overlapping possible: op1_ptr = PTR(op1); */
 		  op2_ptr = PTR(op2);
-		  res_ptr = PTR(res);
 		}
 
 	      if (res_ptr != op1_ptr)
@@ -72,12 +71,11 @@ mpz_xor (mpz_ptr res, mpz_srcptr op1, mpz_srcptr op2)
 	    }
 	  else
 	    {
-	      if (ALLOC(res) < op2_size)
+	      if (UNLIKELY (ALLOC(res) < op2_size))
 		{
-		  _mpz_realloc (res, op2_size);
+		  res_ptr = (mp_ptr) _mpz_realloc (res, op2_size);
 		  op1_ptr = PTR(op1);
 		  /* No overlapping possible: op2_ptr = PTR(op2); */
-		  res_ptr = PTR(res);
 		}
 
 	      if (res_ptr != op2_ptr)
@@ -124,7 +122,10 @@ mpz_xor (mpz_ptr res, mpz_srcptr op1, mpz_srcptr op2)
 	    MPN_SRCPTR_SWAP (op1_ptr,op1_size, op2_ptr,op2_size);
 
 	  res_alloc = op2_size;
-	  res_ptr = MPZ_REALLOC (res, res_alloc);
+	  res_ptr = MPZ_NEWALLOC (res, res_alloc);
+	  /* Don't re-read OP1_PTR and OP2_PTR.  They point to temporary
+	     space--never to the space PTR(res) used to point to before
+	     reallocation.  */
 
 	  MPN_COPY (res_ptr + op1_size, op2_ptr + op1_size,
 		    op2_size - op1_size);
@@ -161,12 +162,11 @@ mpz_xor (mpz_ptr res, mpz_srcptr op1, mpz_srcptr op2)
     op2_ptr = opx;
 
     res_alloc = MAX (op1_size, op2_size) + 1;
-    if (ALLOC(res) < res_alloc)
+    if (UNLIKELY (ALLOC(res) < res_alloc))
       {
-	_mpz_realloc (res, res_alloc);
+	res_ptr = (mp_ptr) _mpz_realloc (res, res_alloc);
 	op1_ptr = PTR(op1);
 	/* op2_ptr points to temporary space.  */
-	res_ptr = PTR(res);
       }
 
     if (op1_size > op2_size)
@@ -187,7 +187,7 @@ mpz_xor (mpz_ptr res, mpz_srcptr op1, mpz_srcptr op2)
     res_ptr[res_size] = cy;
     res_size += (cy != 0);
 
-    MPN_NORMALIZE (res_ptr, res_size);
+    MPN_NORMALIZE_NOT_ZERO (res_ptr, res_size);
     SIZ(res) = -res_size;
     TMP_FREE;
   }

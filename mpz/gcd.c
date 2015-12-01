@@ -1,7 +1,7 @@
 /* mpz/gcd.c:   Calculate the greatest common divisor of two integers.
 
-Copyright 1991, 1993, 1994, 1996, 2000-2002, 2005, 2010 Free Software
-Foundation, Inc.
+Copyright 1991, 1993, 1994, 1996, 2000-2002, 2005, 2010, 2015 Free
+Software Foundation, Inc.
 
 This file is part of the GNU MP Library.
 
@@ -76,14 +76,14 @@ mpz_gcd (mpz_ptr g, mpz_srcptr u, mpz_srcptr v)
   if (usize == 1)
     {
       SIZ (g) = 1;
-      PTR (g)[0] = mpn_gcd_1 (vp, vsize, up[0]);
+      MPZ_NEWALLOC (g, 1)[0] = mpn_gcd_1 (vp, vsize, up[0]);
       return;
     }
 
   if (vsize == 1)
     {
       SIZ(g) = 1;
-      PTR (g)[0] = mpn_gcd_1 (up, usize, vp[0]);
+      MPZ_NEWALLOC (g, 1)[0] = mpn_gcd_1 (up, usize, vp[0]);
       return;
     }
 

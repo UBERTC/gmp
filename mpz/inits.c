@@ -35,20 +35,16 @@ see https://www.gnu.org/licenses/.  */
 void
 mpz_inits (mpz_ptr x, ...)
 {
+  static const mp_limb_t dummy_limb=0xc1a0;
   va_list  ap;
 
   va_start (ap, x);
 
   while (x != NULL)
     {
-      ALLOC (x) = 1;
-      PTR (x) = __GMP_ALLOCATE_FUNC_LIMBS (1);
+      ALLOC (x) = 0;
+      PTR (x) = (mp_ptr) &dummy_limb;
       SIZ (x) = 0;
-
-#ifdef __CHECKER__
-      /* let the low limb look initialized, for the benefit of mpz_get_ui etc */
-      PTR (x) = 0;
-#endif
 
       x = va_arg (ap, mpz_ptr);
     }

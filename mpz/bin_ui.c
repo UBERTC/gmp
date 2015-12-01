@@ -1,6 +1,6 @@
 /* mpz_bin_ui - compute n over k.
 
-Copyright 1998-2002, 2012, 2013 Free Software Foundation, Inc.
+Copyright 1998-2002, 2012, 2013, 2015 Free Software Foundation, Inc.
 
 This file is part of the GNU MP Library.
 
@@ -83,7 +83,7 @@ mpz_bin_ui (mpz_ptr r, mpz_srcptr n, unsigned long int k)
 
   /* Now wanting bin(ni+k,k), with ni positive, and "negate" is the sign (0
      for positive, 1 for negative). */
-  SIZ (r) = 1; PTR (r)[0] = 1;
+  SIZ (r) = 1; MPZ_NEWALLOC (r, 1)[0] = 1;
 
   /* Rewrite bin(n,k) as bin(n,n-k) if that is smaller.  In this case it's
      whether ni+k-k < k meaning ni<k, and if so change to denominator ni+k-k

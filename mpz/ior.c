@@ -1,7 +1,7 @@
 /* mpz_ior -- Logical inclusive or.
 
-Copyright 1991, 1993, 1994, 1996, 1997, 2000, 2001, 2005, 2012, 2013 Free
-Software Foundation, Inc.
+Copyright 1991, 1993, 1994, 1996, 1997, 2000, 2001, 2005, 2012, 2013,
+2015 Free Software Foundation, Inc.
 
 This file is part of the GNU MP Library.
 
@@ -56,9 +56,9 @@ mpz_ior (mpz_ptr res, mpz_srcptr op1, mpz_srcptr op2)
 	{
 	  if (op1_size >= op2_size)
 	    {
-	      if (ALLOC(res) < op1_size)
+	      if (UNLIKELY (ALLOC(res) < op1_size))
 		{
-		  res_ptr = MPZ_REALLOC (res, op1_size);
+		  res_ptr = (mp_ptr) _mpz_realloc (res, op1_size);
 		  /* No overlapping possible: op1_ptr = PTR(op1); */
 		  op2_ptr = PTR(op2);
 		}
@@ -72,9 +72,9 @@ mpz_ior (mpz_ptr res, mpz_srcptr op1, mpz_srcptr op2)
 	    }
 	  else
 	    {
-	      if (ALLOC(res) < op2_size)
+	      if (UNLIKELY (ALLOC(res) < op2_size))
 		{
-		  res_ptr = MPZ_REALLOC (res, op2_size);
+		  res_ptr = (mp_ptr) _mpz_realloc (res, op2_size);
 		  op1_ptr = PTR(op1);
 		  /* No overlapping possible: op2_ptr = PTR(op2); */
 		}
@@ -126,10 +126,10 @@ mpz_ior (mpz_ptr res, mpz_srcptr op1, mpz_srcptr op2)
 	      break;
 	  res_size = i + 1;
 
+	  res_ptr = MPZ_NEWALLOC (res, res_size + 1);
+
 	  if (res_size != 0)
 	    {
-	      res_ptr = MPZ_NEWALLOC (res, res_size + 1);
-
 	      /* Second loop computes the real result.  */
 	      mpn_and_n (res_ptr, op1_ptr, op2_ptr, res_size);
 
@@ -176,12 +176,11 @@ mpz_ior (mpz_ptr res, mpz_srcptr op1, mpz_srcptr op2)
     op2_ptr = opx;
     op2_size -= op2_ptr[op2_size - 1] == 0;
 
-    if (ALLOC(res) < res_alloc)
+    if (UNLIKELY (ALLOC(res) < res_alloc))
       {
-	_mpz_realloc (res, res_alloc);
+	res_ptr = (mp_ptr) _mpz_realloc (res, res_alloc);
 	op1_ptr = PTR(op1);
 	/* op2_ptr points to temporary space.  */
-	res_ptr = PTR(res);
       }
 
     if (op1_size >= op2_size)
