@@ -1,3 +1,35 @@
+2016-01-01 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* tests/cxx/clocale.c: Do not re-define localeconv for mingw.
+	* tests/misc/t-locale.c: Likewise (Thanks Alexander).
+
+	* primesieve.c: Heal a speed regression on small values.
+	* mpz/bin_uiui.c (mpz_bdiv_bin_uiui): 2 factors all at once.
+	  (mpz_goetgheluck_bin_uiui): Use STOP/CONT for loops on primesieve.
+	* mpz/oddfac_1.c: Likewise.
+	* mpz/primorial_ui.c (LOOP_ON_SIEVE_CONTINUE): Define prime locally.
+
+	* gen-fac.c: Use unsigned types for sizes.
+	* mini-gmp/mini-gmp.c: Silence wanrings due to (un)signed types.
+	* mini-gmp/tests/testutils.c: Likewise.
+	* mini-gmp/tests/t-logops.c: Likewise.
+	* mini-gmp/tests/t-cmp_d.c: Likewise.
+	* mini-gmp/tests/t-reuse.c: Likewise.
+	* mini-gmp/tests/t-cong.c: Likewise.
+
+	* mpn/generic/invert.c: Use MPN_FILL macro.
+	* mpn/generic/invertappr.c: Likewise.
+	* mpn/generic/toom53_mul.c: Use _ip1 when available.
+
+2015-12-28 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* mpq/set_str.c: Use __GMP_FREE_FUNC_TYPE.
+	* tests/mpz/t-nextprime.c: Speedup using swap, and correct type.
+
+2015-12-26  Torbjörn Granlund  <torbjorng@google.com>
+
+	* tests/misc.c (tests_start): Assert library version.
+
 2015-12-19  Marc Glisse  <marc.glisse@inria.fr>
 
 	* gmp-impl.h (fft_table_nk): Use gmp_uint_least32_t.
@@ -8,6 +40,13 @@
 	* mpn/x86_64/fat/fat.c (gmp_workaround_skylake_cpuid_bug):
 	New function.
 	(__gmpn_cpuvec_init): Handle more BMI2 crippled CPUs.
+
+2015-12-13 Marco Bodrato <bodrato@mail.dm.unipi.it>
+
+	* mpf/clears.c, mpf/inits.c, mpq/clears.c, mpq/inits.c,
+	* mpz/clears.c, mpz/inits.c: Stop supporting empty list.
+	* tests/arm32call.asm: bx->ret to support thumb-less chips 
+	  (thanks Martin Husemann).
 
 2015-12-13  Torbjörn Granlund  <torbjorng@google.com>
 
@@ -650,7 +689,7 @@
 	(speed_mpn_add_1, speed_mpn_add_1_inplace): New functions.
 	(speed_mpn_sub_1, speed_mpn_sub_1_inplace): New functions.
 	* tune/speed.h: Declare them all.
-        * tune/speed.c (routine): Added mpn_neg, mpn_add_1, mpn_sub_1,
+	* tune/speed.c (routine): Added mpn_neg, mpn_add_1, mpn_sub_1,
 	mpn_add_1_inplace, mpn_sub_1_inplace, and mpz_2fac_ui.
 
 2015-04-25 Marco Bodrato <bodrato@mail.dm.unipi.it>
