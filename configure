@@ -25315,9 +25315,9 @@ if { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$gmp_compile\""; } >&5
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   $NM conftest.$OBJEXT >conftest.out
-  if grep _gurkmacka conftest.out >/dev/null; then
+  if grep "[ 	]_gurkmacka" conftest.out >/dev/null; then
     gmp_cv_asm_underscore=yes
-  elif grep gurkmacka conftest.out >/dev/null; then
+  elif grep "[ 	]gurkmacka" conftest.out >/dev/null; then
     gmp_cv_asm_underscore=no
   else
     echo "configure: $NM doesn't have gurkmacka:" >&5
