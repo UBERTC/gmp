@@ -1,8 +1,8 @@
-dnl  ARM64 mpn_and_n, mpn_andn_n. mpn_nand_n, etc.
+dnl  ARM64 mpn_add_n and mpn_sub_n
 
 dnl  Contributed to the GNU project by Torbjörn Granlund.
 
-dnl  Copyright 2013 Free Software Foundation, Inc.
+dnl  Copyright 2013, 2015 Free Software Foundation, Inc.
 
 dnl  This file is part of the GNU MP Library.
 dnl
@@ -35,6 +35,7 @@ include(`../config.m4')
 C	     cycles/limb
 C Cortex-A53	 ?
 C Cortex-A57	 ?
+C X-Gene	 2
 
 changecom(blah)
 
@@ -43,64 +44,58 @@ define(`up', `x1')
 define(`vp', `x2')
 define(`n',  `x3')
 
-define(`POSTOP', `dnl')
+ifdef(`OPERATION_add_n', `
+  define(`ADDSUBC',	adcs)
+  define(`CLRCY',	`cmn	xzr, xzr')
+  define(`SETCY',	`cmp	$1, #1')
+  define(`RETVAL',	`adc	x0, xzr, xzr')
+  define(`func',	mpn_add_n)
+  define(`func_nc',	mpn_add_nc)')
+ifdef(`OPERATION_sub_n', `
+  define(`ADDSUBC',	sbcs)
+  define(`CLRCY',	`cmp	xzr, xzr')
+  define(`SETCY',	`subs	$1, xzr, $1')
+  define(`RETVAL',	`sbc	x0, xzr, xzr
+			and	x0, x0, #1')
+  define(`func',	mpn_sub_n)
+  define(`func_nc',	mpn_sub_nc)')
 
-ifdef(`OPERATION_and_n',`
-  define(`func',    `mpn_and_n')
-  define(`LOGOP',   `and	$1, $2, $3')')
-ifdef(`OPERATION_andn_n',`
-  define(`func',    `mpn_andn_n')
-  define(`LOGOP',   `bic	$1, $2, $3')')
-ifdef(`OPERATION_nand_n',`
-  define(`func',    `mpn_nand_n')
-  define(`POSTOP',  `mvn	$1, $1')
-  define(`LOGOP',   `and	$1, $2, $3')')
-ifdef(`OPERATION_ior_n',`
-  define(`func',    `mpn_ior_n')
-  define(`LOGOP',   `orr	$1, $2, $3')')
-ifdef(`OPERATION_iorn_n',`
-  define(`func',    `mpn_iorn_n')
-  define(`LOGOP',   `orn	$1, $2, $3')')
-ifdef(`OPERATION_nior_n',`
-  define(`func',    `mpn_nior_n')
-  define(`POSTOP',  `mvn	$1, $1')
-  define(`LOGOP',   `orr	$1, $2, $3')')
-ifdef(`OPERATION_xor_n',`
-  define(`func',    `mpn_xor_n')
-  define(`LOGOP',   `eor	$1, $2, $3')')
-ifdef(`OPERATION_xnor_n',`
-  define(`func',    `mpn_xnor_n')
-  define(`LOGOP',   `eon	$1, $2, $3')')
-
-MULFUNC_PROLOGUE(mpn_and_n mpn_andn_n mpn_nand_n mpn_ior_n mpn_iorn_n mpn_nior_n mpn_xor_n mpn_xnor_n)
+MULFUNC_PROLOGUE(mpn_add_n mpn_add_nc mpn_sub_n mpn_sub_nc)
 
 ASM_START()
+PROLOGUE(func_nc)
+	SETCY(	x4)
+	b	L(ent)
+EPILOGUE()
 PROLOGUE(func)
-	tbz	n, #0, L(b0)
+	CLRCY
+L(ent):	tbz	n, #0, L(b0)
 
 	ldr	x4, [up],#8
 	ldr	x6, [vp],#8
 	sub	n, n, #1
-	LOGOP(	x8, x4, x6)
-	POSTOP(	x8)
+	ADDSUBC	x8, x4, x6
 	str	x8, [rp],#8
-	cbz	n, L(rtn)
+	cbz	n, L(rt)
 
 L(b0):	ldp	x4, x5, [up],#16
 	ldp	x6, x7, [vp],#16
 	sub	n, n, #2
-	b	L(mid)
+	cbz	n, L(end)
 
-L(top):	ldp	x4, x5, [up],#16
-	ldp	x6, x7, [vp],#16
-	sub	n, n, #2
+L(top):	ADDSUBC	x8, x4, x6
+	ADDSUBC	x9, x5, x7
+	ldp	x4, x5, [up]
+	add	up, up, #16
+	ldp	x6, x7, [vp]
+	add	vp, vp, #16
 	stp	x8, x9, [rp],#16
-L(mid):	LOGOP(	x8, x4, x6)
-	LOGOP(	x9, x5, x7)
-	POSTOP(	x8)
-	POSTOP(	x9)
+	sub	n, n, #2
 	cbnz	n, L(top)
 
-	stp	x8, x9, [rp],#16
-L(rtn):	ret
+L(end):	ADDSUBC	x8, x4, x6
+	ADDSUBC	x9, x5, x7
+	stp	x8, x9, [rp]
+L(rt):	RETVAL
+	ret
 EPILOGUE()

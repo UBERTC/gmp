@@ -1,6 +1,8 @@
-dnl  ARM64 mpn_com.
+dnl  ARM64 mpn_mul_1
 
-dnl  Copyright 2013, 2014 Free Software Foundation, Inc.
+dnl  Contributed to the GNU project by Torbjörn Granlund.
+
+dnl  Copyright 2013, 2015 Free Software Foundation, Inc.
 
 dnl  This file is part of the GNU MP Library.
 dnl
@@ -33,51 +35,65 @@ include(`../config.m4')
 C	     cycles/limb
 C Cortex-A53	 ?
 C Cortex-A57	 ?
-
-changecom(blah)
+C X-Gene	 4.25
 
 define(`rp', `x0')
 define(`up', `x1')
 define(`n',  `x2')
+define(`v0', `x3')
 
 ASM_START()
-PROLOGUE(mpn_com)
-	cmp	n, #3
-	b.le	L(bc)
+PROLOGUE(mpn_mul_1)
+	ldr	x12, [up], #8
+	and	x6, n, #3
+	and	n, n, #-4
+	cbz	x6, L(fi0)
+	cmp	x6, #2
+	b.cc	L(fi1)
+	b.eq	L(fi2)
 
-C Copy until rp is 128-bit aligned
-	tbz	rp, #3, L(al2)
-	ld1	{v22.1d}, [up], #8
-	sub	n, n, #1
-	mvn	v22.8b, v22.8b
-	st1	{v22.1d}, [rp], #8
+L(fi3):	mul	x8, x12, v0
+	umulh	x13, x12, v0
+	cmn	xzr, xzr
+	b	L(L3)
+L(fi2):	mul	x7, x12, v0
+	umulh	x5, x12, v0
+	cmn	xzr, xzr
+	b	L(L2)
+L(fi0):	mul	x9, x12, v0
+	umulh	x5, x12, v0
+	sub	n, n, #4
+	cmn	xzr, xzr
+	b	L(L0)
+L(fi1):	mul	x10, x12, v0
+	umulh	x13, x12, v0
+	cmn	xzr, xzr
+	cbz	n, L(end)
 
-L(al2):	ld1	{v26.2d}, [up], #16
-	subs	n, n, #6
-	b.lt	L(end)
+L(top):	sub	n, n, #4
+	ldr	x12, [up], #8
+	str	x10, [rp], #8
+	mul	x6, x12, v0
+	umulh	x5, x12, v0
+	adcs	x9, x6, x13
+L(L0):	ldr	x12, [up], #8
+	str	x9, [rp] ,#8
+	mul	x6, x12, v0
+	umulh	x13, x12, v0
+	adcs	x8, x6, x5
+L(L3):	ldr	x12, [up], #8
+	str	x8, [rp], #8
+	mul	x6, x12, v0
+	umulh	x5, x12, v0
+	adcs	x7, x6, x13
+L(L2):	ldr	x12, [up], #8
+	str	x7, [rp], #8
+	mul	x6, x12, v0
+	umulh	x13, x12, v0
+	adcs	x10, x6, x5
+	cbnz	n, L(top)
 
-	ALIGN(16)
-L(top):	ld1	{v22.2d}, [up], #16
-	mvn	v26.16b, v26.16b
-	st1	{v26.2d}, [rp], #16
-	ld1	{v26.2d}, [up], #16
-	mvn	v22.16b, v22.16b
-	st1	{v22.2d}, [rp], #16
-	subs	n, n, #4
-	b.ge	L(top)
-
-L(end):	mvn	v26.16b, v26.16b
-	st1	{v26.2d}, [rp], #16
-
-C Copy last 0-3 limbs.  Note that rp is aligned after loop, but not when we
-C arrive here via L(bc)
-L(bc):	tbz	n, #1, L(tl1)
-	ld1	{v22.2d}, [up], #16
-	mvn	v22.16b, v22.16b
-	st1	{v22.2d}, [rp], #16
-L(tl1):	tbz	n, #0, L(tl2)
-	ld1	{v22.1d}, [up]
-	mvn	v22.8b, v22.8b
-	st1	{v22.1d}, [rp]
-L(tl2):	ret
+L(end):	str	x10, [rp]
+	adc	x0, x13, xzr
+	ret
 EPILOGUE()

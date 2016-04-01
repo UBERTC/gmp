@@ -1,8 +1,8 @@
-dnl  ARM64 mpn_submul_1
+dnl  ARM64 mpn_addmul_1 and mpn_submul_1
 
 dnl  Contributed to the GNU project by Torbjörn Granlund.
 
-dnl  Copyright 2013 Free Software Foundation, Inc.
+dnl  Copyright 2013, 2015 Free Software Foundation, Inc.
 
 dnl  This file is part of the GNU MP Library.
 dnl
@@ -35,6 +35,7 @@ include(`../config.m4')
 C	     cycles/limb
 C Cortex-A53	 ?
 C Cortex-A57	 ?
+C X-Gene	 5.75
 
 changecom(blah)
 
@@ -90,8 +91,9 @@ L(1):	tbz	n, #1, L(2)
 L(2):	lsr	n, n, #2
 	cbz	n, L(end)
 
-L(top):	ldp	x4, x5, [up],#16
-	ldp	x6, x7, [up],#16
+L(top):	ldp	x4, x5, [up]
+	ldp	x6, x7, [up,#16]
+	add	up, up, #32
 	mul	x8, x4, v0
 	umulh	x12, x4, v0
 	mul	x9, x5, v0
@@ -107,14 +109,15 @@ L(top):	ldp	x4, x5, [up],#16
 	adcs	x11, x11, x14
 	ldp	x6, x7, [rp,#16]
 	adc	x15, x15, xzr
-	sub	n, n, #1
 	ADDSUB	x8, x4, x8
 	ADDSUBC	x9, x5, x9
 	ADDSUBC	x10, x6, x10
 	ADDSUBC	x11, x7, x11
-	stp	x8, x9, [rp],#16
+	stp	x8, x9, [rp]
 	csinc	x15, x15, x15, COND
-	stp	x10, x11, [rp],#16
+	stp	x10, x11, [rp,#16]
+	add	rp, rp, #32
+	sub	n, n, #1
 	cbnz	n, L(top)
 
 L(end):	mov	x0, x15

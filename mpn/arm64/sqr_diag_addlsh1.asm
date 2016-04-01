@@ -1,6 +1,8 @@
-dnl  ARM64 mpn_com.
+dnl  ARM64 mpn_sqr_dial_addlsh1.
 
-dnl  Copyright 2013, 2014 Free Software Foundation, Inc.
+dnl  Contributed to the GNU project by Torbjörn Granlund.
+
+dnl  Copyright 2016 Free Software Foundation, Inc.
 
 dnl  This file is part of the GNU MP Library.
 dnl
@@ -31,53 +33,47 @@ dnl  see https://www.gnu.org/licenses/.
 include(`../config.m4')
 
 C	     cycles/limb
-C Cortex-A53	 ?
+C Cortex-A53	 6.85
 C Cortex-A57	 ?
-
-changecom(blah)
+C X-Gene	 4.1
 
 define(`rp', `x0')
-define(`up', `x1')
-define(`n',  `x2')
+define(`tp', `x1')
+define(`up', `x2')
+define(`n',  `x3')
 
 ASM_START()
-PROLOGUE(mpn_com)
-	cmp	n, #3
-	b.le	L(bc)
+PROLOGUE(mpn_sqr_diag_addlsh1)
+	ldp	x4, x5, [up], #16
+	mul	x10, x4, x4
+	umulh	x13, x4, x4
+	str	x10, [rp], #8
 
-C Copy until rp is 128-bit aligned
-	tbz	rp, #3, L(al2)
-	ld1	{v22.1d}, [up], #8
+	ldp	x6, x7, [tp], #16
+	mul	x4, x5, x5
+	adds	x10, x13, xzr
 	sub	n, n, #1
-	mvn	v22.8b, v22.8b
-	st1	{v22.1d}, [rp], #8
+	b	L(dm)
 
-L(al2):	ld1	{v26.2d}, [up], #16
-	subs	n, n, #6
-	b.lt	L(end)
+L(top):	ldr	x5, [up], #8
+	adds	x10, x6, x10
+	adcs	x11, x7, x4
+	ldp	x6, x7, [tp], #16
+	mul	x4, x5, x5
+	stp	x10, x11, [rp], #16
+	add	x10, x13, x12
+L(dm):	adcs	x6, x6, x6
+	sub	n, n, #1
+	adcs	x7, x7, x7
+	umulh	x13, x5, x5
+	adc	x12, xzr, xzr
+	cbnz	n, L(top)
 
-	ALIGN(16)
-L(top):	ld1	{v22.2d}, [up], #16
-	mvn	v26.16b, v26.16b
-	st1	{v26.2d}, [rp], #16
-	ld1	{v26.2d}, [up], #16
-	mvn	v22.16b, v22.16b
-	st1	{v22.2d}, [rp], #16
-	subs	n, n, #4
-	b.ge	L(top)
+	adds	x10, x6, x10
+	adcs	x11, x7, x4
+	stp	x10, x11, [rp], #16
+	adc	x13, x12, x13
+	str	x13, [rp]
 
-L(end):	mvn	v26.16b, v26.16b
-	st1	{v26.2d}, [rp], #16
-
-C Copy last 0-3 limbs.  Note that rp is aligned after loop, but not when we
-C arrive here via L(bc)
-L(bc):	tbz	n, #1, L(tl1)
-	ld1	{v22.2d}, [up], #16
-	mvn	v22.16b, v22.16b
-	st1	{v22.2d}, [rp], #16
-L(tl1):	tbz	n, #0, L(tl2)
-	ld1	{v22.1d}, [up]
-	mvn	v22.8b, v22.8b
-	st1	{v22.1d}, [rp]
-L(tl2):	ret
+	ret
 EPILOGUE()
